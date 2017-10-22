@@ -133,8 +133,8 @@ public class MainActivity extends AppCompatActivity
 
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(Model model) {
+            super.onPostExecute(model);
         }
     }
 }
