@@ -1,29 +1,30 @@
 package pvtitov.timetable;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-import pvtitov.timetable.model.Country;
+import pvtitov.timetable.model.City;
+import pvtitov.timetable.model.Model;
+import pvtitov.timetable.model.Station;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,10 +45,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Gson gson = new Gson();
-        Country country = gson.fromJson(convertJsonToString(),Country.class);
-        TextView textView = (TextView) findViewById(R.id.text_test);
-        textView.setText(country.getCountry());
+        ParseJson parseJson = new ParseJson();
+        parseJson.execute();
 
     }
 
@@ -65,13 +64,14 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         switch (id) {
             case R.id.nav_timetable:
+                Toast.makeText(this, "Расписание", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_info:
+                Toast.makeText(this, "Инфо", Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -94,5 +94,47 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
         return string;
+    }
+
+
+    private class ParseJson extends AsyncTask<Void, Void, Model> {
+
+        private Model mModel;
+
+        @Override
+        protected Model doInBackground(Void... voids) {
+            // Чтение из файла. Преобразование всего файла в String.
+            InputStream inputStream = getResources().openRawResource(R.raw.all_stations);
+            Scanner scanner = new Scanner(inputStream);
+            StringBuilder stringBuilder = new StringBuilder();
+            while (scanner.hasNextLine()) {
+                stringBuilder.append(scanner.nextLine());
+            }
+            String wholeJsonFileAsString = stringBuilder.toString();
+
+            // Разбор JSON и запись в объекты (десериализация)
+            stringBuilder = null;
+            try {
+                JSONObject root = new JSONObject(wholeJsonFileAsString);
+                JSONArray citiesFromJSONArray = root.getJSONArray("citiesFrom");
+                List<JSONObject> citiesFromJSONObjects = new ArrayList<>();
+                for (int i = 0; i < citiesFromJSONArray.length(); i++){
+                    citiesFromJSONObjects.add(citiesFromJSONArray.getJSONObject(i));
+                    citiesFromJSONObjects.get(i);
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return mModel;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package pvtitov.timetable.model;
 
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -9,25 +8,12 @@ import java.util.List;
  */
 
 public class City {
-
-    @SerializedName("cityTitle")
+    private String country;
     private String city;
-
-    @SerializedName("latitude")
-    private double latitude;
-
-    @SerializedName("longitude")
-    private double longitude;
-
-    @SerializedName("districtTitle")
+    private Point point;
     private String district;
-
-    @SerializedName("cityId")
-    private int id;
-
-    @SerializedName("regionTitle")
+    private int cityId;
     private String region;
-
     private List<Station> stations;
 
 
@@ -39,36 +25,12 @@ public class City {
         this.city = city;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
     public String getDistrict() {
         return district;
     }
 
     public void setDistrict(String district) {
         this.district = district;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getRegion() {
@@ -85,5 +47,29 @@ public class City {
 
     public void setStations(List<Station> stations) {
         this.stations = stations;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
     }
 }

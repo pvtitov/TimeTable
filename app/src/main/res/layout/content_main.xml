@@ -9,11 +9,6 @@
     tools:context="pvtitov.timetable.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_test"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,26 +16,29 @@
         android:orientation="vertical">
 
 
-        <AutoCompleteTextView
+        <Spinner
             android:id="@+id/auto_departure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Станция отправления"
-            />
+            android:layout_margin="8dp"
+            android:entries="@array/example_list"
+            android:spinnerMode="dialog" />
 
-        <AutoCompleteTextView
+        <Spinner
             android:id="@+id/auto_arrival"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Станция прибытия"
-            />
+            android:layout_margin="8dp"
+            android:entries="@array/example_list"
+            android:spinnerMode="dialog" />
 
-        <AutoCompleteTextView
+        <Spinner
             android:id="@+id/auto_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Дата"
-            />
+            android:layout_margin="8dp"
+            android:entries="@array/example_list"
+            android:spinnerMode="dialog" />
 
     </LinearLayout>
 
