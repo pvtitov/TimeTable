@@ -119,20 +119,46 @@ public class MainActivity extends AppCompatActivity
                 JSONArray citiesFromJSONArray = root.getJSONArray("citiesFrom");
                 List<JSONObject> citiesFromJSONObjects = new ArrayList<>();
                 List<City> citiesFrom = new ArrayList<>();
+
                 for (int i = 0; i < citiesFromJSONArray.length(); i++){
                     citiesFromJSONObjects.add(citiesFromJSONArray.getJSONObject(i));
                     JSONObject cityJSONObject = citiesFromJSONObjects.get(i);
+
                     City city = new City();
                     city.setCountry(cityJSONObject.getString("countryTitle"));
                     city.setDistrict(cityJSONObject.getString("districtTitle"));
                     city.setCityId(cityJSONObject.getInt("cityId"));
                     city.setCity(cityJSONObject.getString("cityTitle"));
                     city.setRegion(cityJSONObject.getString("regionTitle"));
-                    JSONObject pointJSONObject = cityJSONObject.getJSONObject("point");
-                    Point point = new Point();
-                    point.setLatitude(pointJSONObject.getDouble("latitude"));
-                    point.setLongitude(pointJSONObject.getDouble("longitude"));
 
+                    JSONObject cityPointJSONObject = cityJSONObject.getJSONObject("point");
+                    Point pointOfCity = new Point();
+                    pointOfCity.setLatitude(cityPointJSONObject.getDouble("latitude"));
+                    pointOfCity.setLongitude(cityPointJSONObject.getDouble("longitude"));
+                    city.setPoint(pointOfCity);
+
+                    JSONArray stationsJSONArray = cityJSONObject.getJSONArray("stations");
+                    List<Station> stations = new ArrayList<>();
+
+                    for (int j = 0; i < stationsJSONArray.length(); i++) {
+                        citiesFromJSONObjects.add(citiesFromJSONArray.getJSONObject(i));
+                        JSONObject stationJSONObject = citiesFromJSONObjects.get(i);
+
+                        Station station = new Station();
+                        station.setCountry(stationJSONObject.getString("countryTitle"));
+                        station.setDistrict(stationJSONObject.getString("districtTitle"));
+                        station.setCityId(stationJSONObject.getInt("cityId"));
+                        station.setCity(stationJSONObject.getString("cityTitle"));
+                        station.setRegion(stationJSONObject.getString("regionTitle"));
+                        station.setStation(stationJSONObject.getString("stationTitle"));
+                        station.setStationId(stationJSONObject.getInt("stationId"));
+
+                        JSONObject pointJSONObject = stationJSONObject.getJSONObject("point");
+                        Point pointOfStation = new Point();
+                        pointOfStation.setLatitude(pointJSONObject.getDouble("latitude"));
+                        pointOfStation.setLongitude(pointJSONObject.getDouble("longitude"));
+                        station.setPoint(pointOfStation);
+                    }
                 }
 
             } catch (JSONException e) {
