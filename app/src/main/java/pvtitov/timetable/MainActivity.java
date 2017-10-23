@@ -24,6 +24,7 @@ import java.util.Scanner;
 
 import pvtitov.timetable.model.City;
 import pvtitov.timetable.model.Model;
+import pvtitov.timetable.model.Point;
 import pvtitov.timetable.model.Station;
 
 public class MainActivity extends AppCompatActivity
@@ -110,17 +111,27 @@ public class MainActivity extends AppCompatActivity
             while (scanner.hasNextLine()) {
                 stringBuilder.append(scanner.nextLine());
             }
-            String wholeJsonFileAsString = stringBuilder.toString();
+            String jsonFileAsString = stringBuilder.toString();
 
             // Разбор JSON и запись в объекты (десериализация)
-            stringBuilder = null;
             try {
-                JSONObject root = new JSONObject(wholeJsonFileAsString);
+                JSONObject root = new JSONObject(jsonFileAsString);
                 JSONArray citiesFromJSONArray = root.getJSONArray("citiesFrom");
                 List<JSONObject> citiesFromJSONObjects = new ArrayList<>();
+                List<City> citiesFrom = new ArrayList<>();
                 for (int i = 0; i < citiesFromJSONArray.length(); i++){
                     citiesFromJSONObjects.add(citiesFromJSONArray.getJSONObject(i));
-                    citiesFromJSONObjects.get(i);
+                    JSONObject cityJSONObject = citiesFromJSONObjects.get(i);
+                    City city = new City();
+                    city.setCountry(cityJSONObject.getString("countryTitle"));
+                    city.setDistrict(cityJSONObject.getString("districtTitle"));
+                    city.setCityId(cityJSONObject.getInt("cityId"));
+                    city.setCity(cityJSONObject.getString("cityTitle"));
+                    city.setRegion(cityJSONObject.getString("regionTitle"));
+                    JSONObject pointJSONObject = cityJSONObject.getJSONObject("point");
+                    Point point = new Point();
+                    point.setLatitude(pointJSONObject.getDouble("latitude"));
+                    point.setLongitude(pointJSONObject.getDouble("longitude"));
 
                 }
 
