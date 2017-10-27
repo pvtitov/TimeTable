@@ -17,27 +17,24 @@
 
 
         <Spinner
-            android:id="@+id/auto_departure"
+            android:id="@+id/spinner_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:entries="@array/example_list"
             android:spinnerMode="dialog" />
 
         <Spinner
-            android:id="@+id/auto_arrival"
+            android:id="@+id/spinner_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:entries="@array/example_list"
             android:spinnerMode="dialog" />
 
         <Spinner
-            android:id="@+id/auto_date"
+            android:id="@+id/spinner_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:entries="@array/example_list"
             android:spinnerMode="dialog" />
 
     </LinearLayout>

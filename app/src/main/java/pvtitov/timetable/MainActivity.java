@@ -8,14 +8,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import pvtitov.timetable.model.Model;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Model mModel;
+    ArrayAdapter<String> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +34,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ParseJson parseJson = new ParseJson(this);
+        ParseJson parseJson = new ParseJson(this, mAdapter);
         parseJson.execute();
-
+        if (mAdapter != null) {
+            Spinner spinnerFrom = (Spinner) findViewById(R.id.spinner_from);
+            spinnerFrom.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

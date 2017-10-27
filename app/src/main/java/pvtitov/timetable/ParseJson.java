@@ -3,7 +3,7 @@ package pvtitov.timetable;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,10 +19,13 @@ import pvtitov.timetable.model.Model;
 
 public class ParseJson extends AsyncTask<Void, Void, Model> {
 
-    Context mContext;
+    private Context mContext;
+    //TODO Why does mAdapter never accessed?
+    private ArrayAdapter<String> mAdapter;
 
-    public ParseJson(Context context){
+    public ParseJson(Context context, ArrayAdapter<String> adapter){
         mContext = context;
+        mAdapter = adapter;
     }
 
     @Override
@@ -54,7 +57,12 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
     @Override
     protected void onPostExecute(Model model) {
         super.onPostExecute(model);
-        Toast.makeText(mContext, model.getCityFrom(10).getCity(), Toast.LENGTH_SHORT).show();
+
+        List<String> citiesFrom = new ArrayList<>();
+
+        for (int i = 0; i < model.getCitiesFrom().size(); i++) citiesFrom.add(model.getCityFrom(i).getCity());
+
+        mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, citiesFrom);
     }
 
     private List<City> parseJSONArray(JSONArray citiesJSONArray) throws JSONException {
