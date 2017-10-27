@@ -45,6 +45,10 @@ public class City {
         return stations;
     }
 
+    public Station getStation(int i) {
+        return stations.get(i);
+    }
+
     public void setStations(List<Station> stations) {
         this.stations = stations;
     }

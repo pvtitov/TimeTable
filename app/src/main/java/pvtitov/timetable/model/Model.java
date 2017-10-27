@@ -15,12 +15,20 @@ public class Model {
         return citiesFrom;
     }
 
+    public City getCityFrom(int i) {
+        return citiesFrom.get(i);
+    }
+
     public void setCitiesFrom(List<City> citiesFrom) {
         this.citiesFrom = citiesFrom;
     }
 
     public List<City> getCitiesTo() {
         return citiesTo;
+    }
+
+    public City getCityTo(int i) {
+        return citiesTo.get(i);
     }
 
     public void setCitiesTo(List<City> citiesTo) {
