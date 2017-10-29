@@ -3,7 +3,6 @@ package pvtitov.timetable;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,10 +20,9 @@ import pvtitov.timetable.model.Model;
 public class ParseJson extends AsyncTask<Void, Void, Model> {
 
     private Context mContext;
-    //TODO Why does mAdapter never accessed?
-    private ArrayAdapter<String> mAdapter;
+    private CustomArrayAdapter<City> mAdapter;
 
-    public ParseJson(Context context, ArrayAdapter<String> adapter){
+    public ParseJson(Context context, CustomArrayAdapter<City> adapter){
         mContext = context;
         mAdapter = adapter;
     }
@@ -47,7 +46,7 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
             model.setCitiesTo(parseJSONArray(root.getJSONArray("citiesTo")));
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d("happy", e.getStackTrace().toString());
+            Log.d("happy", Arrays.toString(e.getStackTrace()));
         }
         return model;
     }
@@ -58,11 +57,14 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
     protected void onPostExecute(Model model) {
         super.onPostExecute(model);
 
-        List<String> citiesFrom = new ArrayList<>();
+        List<City> citiesFrom = new ArrayList<>();
 
-        for (int i = 0; i < model.getCitiesFrom().size(); i++) citiesFrom.add(model.getCityFrom(i).getCity());
+        for (int i = 0; i < model.getCitiesFrom().size(); i++) {
+            citiesFrom.add(model.getCityFrom(i));
+        }
 
-        mAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, citiesFrom);
+        mAdapter.updateDataset(citiesFrom);
+        mAdapter.notifyDataSetChanged();
     }
 
     private List<City> parseJSONArray(JSONArray citiesJSONArray) throws JSONException {

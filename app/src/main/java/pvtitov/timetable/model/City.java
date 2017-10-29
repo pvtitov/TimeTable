@@ -76,4 +76,10 @@ public class City {
     public void setCityId(int cityId) {
         this.cityId = cityId;
     }
+
+    // Нужен для CustomArrayAdapter<City>
+    @Override
+    public String toString() {
+        return city;
+    }
 }
