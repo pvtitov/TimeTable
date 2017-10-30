@@ -20,12 +20,18 @@ import pvtitov.timetable.model.Model;
 public class ParseJson extends AsyncTask<Void, Void, Model> {
 
     private Context mContext;
-    private CustomArrayAdapter<City> mAdapter;
+    private CustomArrayAdapter<City> mFromAdapter;
+    private CustomArrayAdapter<City> mToAdapter;
 
-    public ParseJson(Context context, CustomArrayAdapter<City> adapter){
+
+    public ParseJson(Context context,
+                     CustomArrayAdapter<City> fromAdapter,
+                     CustomArrayAdapter<City> toAdapter) {
         mContext = context;
-        mAdapter = adapter;
+        mFromAdapter = fromAdapter;
+        mToAdapter = toAdapter;
     }
+
 
     @Override
     protected Model doInBackground(Void... voids) {
@@ -58,13 +64,21 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
         super.onPostExecute(model);
 
         List<City> citiesFrom = new ArrayList<>();
+        List<City> citiesTo = new ArrayList<>();
 
         for (int i = 0; i < model.getCitiesFrom().size(); i++) {
             citiesFrom.add(model.getCityFrom(i));
         }
 
-        mAdapter.updateDataset(citiesFrom);
-        mAdapter.notifyDataSetChanged();
+        for (int i = 0; i < model.getCitiesTo().size(); i++) {
+            citiesTo.add(model.getCityTo(i));
+        }
+
+        mFromAdapter.updateDataset(citiesFrom);
+        mToAdapter.updateDataset(citiesTo);
+
+        mFromAdapter.notifyDataSetChanged();
+        mToAdapter.notifyDataSetChanged();
     }
 
     private List<City> parseJSONArray(JSONArray citiesJSONArray) throws JSONException {

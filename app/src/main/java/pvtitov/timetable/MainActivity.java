@@ -19,7 +19,6 @@ import pvtitov.timetable.model.City;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private CustomArrayAdapter<City> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +37,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        App app = (App) getApplicationContext();
+
         Spinner spinnerFrom = (Spinner) findViewById(R.id.spinner_from);
-        mAdapter = new CustomArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<City>());
-        spinnerFrom.setAdapter(mAdapter);
-        ParseJson parseJson = new ParseJson(this, mAdapter);
-        parseJson.execute();
+        CustomArrayAdapter<City> mFromAdapter = app.getFromAdapter();
+        spinnerFrom.setAdapter(mFromAdapter);
+
+        Spinner spinnerTo = (Spinner) findViewById(R.id.spinner_to);
+        CustomArrayAdapter<City> mToAdapter = app.getToAdapter();
+        spinnerTo.setAdapter(mToAdapter);
     }
 
     @Override
