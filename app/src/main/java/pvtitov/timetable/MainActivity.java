@@ -2,22 +2,29 @@ package pvtitov.timetable;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Spinner;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+
 
 import pvtitov.timetable.model.City;
+import pvtitov.timetable.model.Date;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DatePickerFragment.DateConsumer {
+
+    private Date mDate;
+    TextView mDateTextView;
 
 
     @Override
@@ -37,15 +44,27 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        App app = (App) getApplicationContext();
+        // Использую стороннюю библиотеку для раскрывающегося списка с поиском с автозаполнением:
+        // https://github.com/miteshpithadiya/SearchableSpinner
 
-        Spinner spinnerFrom = (Spinner) findViewById(R.id.spinner_from);
-        CustomArrayAdapter<City> mFromAdapter = app.getFromAdapter();
+        SearchableSpinner spinnerFrom = (SearchableSpinner) findViewById(R.id.spinner_from);
+        spinnerFrom.setTitle("From:");
+        CustomArrayAdapter<City> mFromAdapter = App.getInstance().getFromAdapter();
         spinnerFrom.setAdapter(mFromAdapter);
 
-        Spinner spinnerTo = (Spinner) findViewById(R.id.spinner_to);
-        CustomArrayAdapter<City> mToAdapter = app.getToAdapter();
+        SearchableSpinner spinnerTo = (SearchableSpinner) findViewById(R.id.spinner_to);
+        spinnerTo.setTitle("To:");
+        CustomArrayAdapter<City> mToAdapter = App.getInstance().getToAdapter();
         spinnerTo.setAdapter(mToAdapter);
+
+        mDateTextView = (TextView) findViewById(R.id.textview_date);
+        mDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment pickDateDialog = new DatePickerFragment();
+                pickDateDialog.show(getSupportFragmentManager(), "date_picker");
+            }
+        });
     }
 
     @Override
@@ -76,5 +95,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    public void onDatePicked(Date date) {
+        mDate = date;
+        if (mDateTextView != null) mDateTextView.setText(date.getDay() + "." + date.getMonth() + "." + date.getYear());
     }
 }

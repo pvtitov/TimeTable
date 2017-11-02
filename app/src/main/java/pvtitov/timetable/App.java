@@ -12,6 +12,12 @@ import pvtitov.timetable.model.City;
 
 public class App extends Application {
 
+    private static App singleton;
+
+    public static App getInstance(){
+        return singleton;
+    }
+
     private CustomArrayAdapter<City> mFromAdapter;
     private CustomArrayAdapter<City> mToAdapter;
 
@@ -21,6 +27,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        singleton = this;
 
         mFromAdapter = new CustomArrayAdapter<>(this, R.layout.spinner_item, R.id.spinner_item, new ArrayList<City>());
         mToAdapter = new CustomArrayAdapter<>(this, R.layout.spinner_item, R.id.spinner_item, new ArrayList<City>());

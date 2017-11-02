@@ -16,26 +16,27 @@
         android:orientation="vertical">
 
 
-        <Spinner
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/spinner_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:spinnerMode="dialog" />
+            android:layout_margin="16dp"
+            />
 
-        <Spinner
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/spinner_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:spinnerMode="dialog" />
+            android:layout_margin="16dp"
+            />
 
-        <Spinner
-            android:id="@+id/spinner_date"
+        <TextView
+            android:id="@+id/textview_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:spinnerMode="dialog" />
+            android:text="Выбери дату"
+            />
 
     </LinearLayout>
 
