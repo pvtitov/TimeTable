@@ -23,8 +23,14 @@ import pvtitov.timetable.model.Date;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DatePickerFragment.DateConsumer {
 
+    private static final String STATE_YEAR = "year";
+    private static final String STATE_MONTH = "month";
+    private static final String STATE_DAY = "day";
+    private static final String STATE_IS_PICKED = "picked";
+
     private Date mDate;
-    TextView mDateTextView;
+    private TextView mDateTextView;
+    private boolean mDateIsPicked;
 
 
     @Override
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -101,6 +108,37 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDatePicked(Date date) {
         mDate = date;
-        if (mDateTextView != null) mDateTextView.setText(date.getDay() + "." + date.getMonth() + "." + date.getYear());
+        mDateIsPicked = true;
+        if (mDateTextView != null) {
+            mDateTextView.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
+        }
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mDateIsPicked) {
+            outState.putInt(STATE_YEAR, mDate.getYear());
+            outState.putInt(STATE_MONTH, mDate.getMonth());
+            outState.putInt(STATE_DAY, mDate.getDay());
+            outState.putBoolean(STATE_IS_PICKED, mDateIsPicked);
+        }
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState.getBoolean(STATE_IS_PICKED)) {
+            mDate = new Date();
+            mDate.setYear(savedInstanceState.getInt(STATE_YEAR));
+            mDate.setMonth(savedInstanceState.getInt(STATE_MONTH));
+            mDate.setDay(savedInstanceState.getInt(STATE_DAY));
+            mDateIsPicked = savedInstanceState.getBoolean(STATE_IS_PICKED);
+
+            if (mDateTextView != null) mDateTextView.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
+        }
     }
 }
