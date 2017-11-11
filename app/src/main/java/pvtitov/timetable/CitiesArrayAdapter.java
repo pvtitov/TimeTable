@@ -18,17 +18,17 @@ import java.util.List;
 import pvtitov.timetable.model.City;
 
 
-class CitiesArrayAdapter extends ArrayAdapter {
+public class CitiesArrayAdapter extends ArrayAdapter {
     private List<City> mCities = new ArrayList<>();
     private Context mContext;
 
-    CitiesArrayAdapter(@NonNull Context context, @LayoutRes int resource, @IdRes int textViewResourceId, @NonNull List<City> objects) {
+    public CitiesArrayAdapter(@NonNull Context context, @LayoutRes int resource, @IdRes int textViewResourceId, @NonNull List<City> objects) {
         super(context, resource, textViewResourceId, objects);
         mCities = objects;
         mContext = context;
     }
 
-    CitiesArrayAdapter(Context context, List<City> objects) {
+    public CitiesArrayAdapter(Context context, List<City> objects) {
         super(context, 0, objects);
         mCities = objects;
         mContext = context;
@@ -40,14 +40,21 @@ class CitiesArrayAdapter extends ArrayAdapter {
         return mCities.size();
     }
 
+    @Nullable
+    @Override
+    public Object getItem(int position) {
+        Object item = null;
+        if (mCities.get(position) != null) item = mCities.get(position);
+        return item;
+    }
+
     public void updateDataset(List<City> objects) {
         mCities = objects;
-        Log.d("happy", "getView() - Австрия: " + mCities.get(0).getCountry());
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
 
         View itemView = convertView;
@@ -57,6 +64,20 @@ class CitiesArrayAdapter extends ArrayAdapter {
 
         TextView countryTextView = itemView.findViewById(R.id.country);
         countryTextView.setText(mCities.get(position).getCountry());
+
+        TextView cityTextView = itemView.findViewById(R.id.city);
+        cityTextView.setText(mCities.get(position).getCity());
+
+        return itemView;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View itemView = convertView;
+
+        if (itemView == null)
+            itemView = LayoutInflater.from(mContext).inflate(R.layout.spinner_layout, parent, false);
 
         TextView cityTextView = itemView.findViewById(R.id.city);
         cityTextView.setText(mCities.get(position).getCity());

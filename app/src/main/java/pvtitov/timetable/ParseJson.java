@@ -75,9 +75,9 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
         }
 
         mFromAdapter.updateDataset(citiesFrom);
-        mToAdapter.updateDataset(citiesTo);
-
         mFromAdapter.notifyDataSetChanged();
+
+        mToAdapter.updateDataset(citiesTo);
         mToAdapter.notifyDataSetChanged();
     }
 

@@ -5,59 +5,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
+    android:gravity="center"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="pvtitov.timetable.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <!--
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
 
-
-        <Spinner
+        <pvtitov.timetable.searchable_spinner.SearchableSpinner
             android:id="@+id/spinner_from"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            />
-
-        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
-            android:id="@+id/spinner_to"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            />
-
-        <TextView
-            android:id="@+id/textview_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="18sp"
             android:textColor="@android:color/black"
-            android:text="Выбери дату"
             />
 
-    </LinearLayout>
-    -->
+        <Button
+            android:id="@+id/button_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:text="Пункт отправления"
+            />
 
+        <Button
+            android:id="@+id/button_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:text="Пункт назначения"
+            />
 
-    <ListView
-        android:id="@+id/from_list"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        />
-
-    <ListView
-        android:id="@+id/to_list"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        />
+        <Button
+            android:id="@+id/button_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:text="Дата"
+            />
 
 </LinearLayout>
