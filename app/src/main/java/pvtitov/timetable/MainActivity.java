@@ -1,5 +1,6 @@
 package pvtitov.timetable;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -10,13 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 
-import pvtitov.timetable.model.City;
 import pvtitov.timetable.model.Date;
 
 
@@ -53,14 +54,14 @@ public class MainActivity extends AppCompatActivity
         // Использую стороннюю библиотеку для раскрывающегося списка с поиском с автозаполнением:
         // https://github.com/miteshpithadiya/SearchableSpinner
 
-        SearchableSpinner spinnerFrom = (SearchableSpinner) findViewById(R.id.spinner_from);
-        spinnerFrom.setTitle("From:");
-        CustomArrayAdapter<City> mFromAdapter = App.getInstance().getFromAdapter();
+        /*Spinner spinnerFrom = (Spinner) findViewById(R.id.spinner_from);
+        //spinnerFrom.setTitle("From:");
+        CitiesArrayAdapter mFromAdapter = App.getInstance().getFromAdapter();
         spinnerFrom.setAdapter(mFromAdapter);
 
         SearchableSpinner spinnerTo = (SearchableSpinner) findViewById(R.id.spinner_to);
         spinnerTo.setTitle("To:");
-        CustomArrayAdapter<City> mToAdapter = App.getInstance().getToAdapter();
+        CitiesArrayAdapter mToAdapter = App.getInstance().getToAdapter();
         spinnerTo.setAdapter(mToAdapter);
 
         mDateTextView = (TextView) findViewById(R.id.textview_date);
@@ -70,7 +71,15 @@ public class MainActivity extends AppCompatActivity
                 DialogFragment pickDateDialog = new DatePickerFragment();
                 pickDateDialog.show(getSupportFragmentManager(), "date_picker");
             }
-        });
+        });*/
+
+        ListView listFrom = (ListView) findViewById(R.id.from_list);
+        CitiesArrayAdapter mFromAdapter = App.getInstance().getFromAdapter();
+        listFrom.setAdapter(mFromAdapter);
+
+        ListView listTo = (ListView) findViewById(R.id.to_list);
+        CitiesArrayAdapter mToAdapter = App.getInstance().getToAdapter();
+        listTo.setAdapter(mToAdapter);
     }
 
 
@@ -92,10 +101,9 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_timetable:
-                Toast.makeText(this, "Расписание", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_info:
-                Toast.makeText(this, "Инфо", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, InfoActivity.class));
                 break;
         }
 

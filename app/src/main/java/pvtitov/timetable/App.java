@@ -18,19 +18,20 @@ public class App extends Application {
         return singleton;
     }
 
-    private CustomArrayAdapter<City> mFromAdapter;
-    private CustomArrayAdapter<City> mToAdapter;
+    private CitiesArrayAdapter mFromAdapter;
+    private CitiesArrayAdapter mToAdapter;
 
-    public CustomArrayAdapter<City> getFromAdapter() {return mFromAdapter;}
-    public CustomArrayAdapter<City> getToAdapter() {return mToAdapter;}
+    public CitiesArrayAdapter getFromAdapter() {return mFromAdapter;}
+    public CitiesArrayAdapter getToAdapter() {return mToAdapter;}
 
     @Override
     public void onCreate() {
         super.onCreate();
         singleton = this;
 
-        mFromAdapter = new CustomArrayAdapter<>(this, R.layout.spinner_item, R.id.spinner_item, new ArrayList<City>());
-        mToAdapter = new CustomArrayAdapter<>(this, R.layout.spinner_item, R.id.spinner_item, new ArrayList<City>());
+
+        mFromAdapter = new CitiesArrayAdapter(this, new ArrayList<City>());
+        mToAdapter = new CitiesArrayAdapter(this, R.layout.spinner_layout, R.id.city, new ArrayList<City>());
         ParseJson mParseJson = new ParseJson(this, mFromAdapter, mToAdapter);
         mParseJson.execute();
     }

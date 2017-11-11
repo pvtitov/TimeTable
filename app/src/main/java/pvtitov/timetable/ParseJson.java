@@ -20,13 +20,13 @@ import pvtitov.timetable.model.Model;
 public class ParseJson extends AsyncTask<Void, Void, Model> {
 
     private Context mContext;
-    private CustomArrayAdapter<City> mFromAdapter;
-    private CustomArrayAdapter<City> mToAdapter;
+    private CitiesArrayAdapter mFromAdapter;
+    private CitiesArrayAdapter mToAdapter;
 
 
     public ParseJson(Context context,
-                     CustomArrayAdapter<City> fromAdapter,
-                     CustomArrayAdapter<City> toAdapter) {
+                     CitiesArrayAdapter fromAdapter,
+                     CitiesArrayAdapter toAdapter) {
         mContext = context;
         mFromAdapter = fromAdapter;
         mToAdapter = toAdapter;

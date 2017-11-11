@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="pvtitov.timetable.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <!--
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,7 +18,7 @@
         android:orientation="vertical">
 
 
-        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+        <Spinner
             android:id="@+id/spinner_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,9 +37,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
             android:text="Выбери дату"
             />
 
     </LinearLayout>
+    -->
 
-</FrameLayout>
+
+    <ListView
+        android:id="@+id/from_list"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        />
+
+    <ListView
+        android:id="@+id/to_list"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>
