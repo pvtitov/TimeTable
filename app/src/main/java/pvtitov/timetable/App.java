@@ -18,11 +18,11 @@ public class App extends Application {
         return singleton;
     }
 
-    private CitiesArrayAdapter mFromAdapter;
-    private CitiesArrayAdapter mToAdapter;
+    private StationsAdapter mFromAdapter;
+    private StationsAdapter mToAdapter;
 
-    public CitiesArrayAdapter getFromAdapter() {return mFromAdapter;}
-    public CitiesArrayAdapter getToAdapter() {return mToAdapter;}
+    public StationsAdapter getFromAdapter() {return mFromAdapter;}
+    public StationsAdapter getToAdapter() {return mToAdapter;}
 
     @Override
     public void onCreate() {
@@ -30,8 +30,8 @@ public class App extends Application {
         singleton = this;
 
 
-        mFromAdapter = new CitiesArrayAdapter(this, new ArrayList<City>());
-        mToAdapter = new CitiesArrayAdapter(this, R.layout.spinner_layout, R.id.city, new ArrayList<City>());
+        mFromAdapter = new StationsAdapter(this, new ArrayList<City>());
+        mToAdapter = new StationsAdapter(this, new ArrayList<City>());
         ParseJson mParseJson = new ParseJson(this, mFromAdapter, mToAdapter);
         mParseJson.execute();
     }

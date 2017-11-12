@@ -12,15 +12,6 @@
     tools:showIn="@layout/app_bar_main">
 
 
-        <pvtitov.timetable.searchable_spinner.SearchableSpinner
-            android:id="@+id/spinner_from"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            />
-
         <Button
             android:id="@+id/button_from"
             android:layout_width="wrap_content"

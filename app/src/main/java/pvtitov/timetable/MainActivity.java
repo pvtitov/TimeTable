@@ -12,13 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 
 import pvtitov.timetable.model.Date;
-import pvtitov.timetable.searchable_spinner.SearchableSpinner;
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -29,10 +26,14 @@ public class MainActivity extends AppCompatActivity
     private static final String STATE_DAY = "day";
     private static final String STATE_IS_PICKED = "picked";
 
+    public static final String EXTRA_CHOOSE_ADAPTER = "choose_adapter";
+    public static final String ADAPTER_FROM = "from";
+    public static final String ADAPTER_TO = "to";
+
     private Date mDate;
-    private TextView mDateTextView;
+    private Button mButtonDate;
     private boolean mDateIsPicked;
-    SearchableSpinner mSpinnerFrom;
+
 
 
     @Override
@@ -52,49 +53,45 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        // Использую стороннюю библиотеку для раскрывающегося списка с поиском с автозаполнением:
-        // https://github.com/miteshpithadiya/SearchableSpinner
-
-
-        SearchableSpinner spinnerFrom = (SearchableSpinner) findViewById(R.id.spinner_from);
-        CitiesArrayAdapter mFromAdapter = App.getInstance().getFromAdapter();
-        spinnerFrom.setAdapter(mFromAdapter);
-        spinnerFrom.setTitle("Пункт отправления:");
-
-/*
-        mSpinnerFrom = new SearchableSpinner(MainActivity.this);
-        final CitiesArrayAdapter fromAdapter = App.getInstance().getFromAdapter();
-        mSpinnerFrom.setAdapter(fromAdapter);
-
         Button buttonFrom = (Button) findViewById(R.id.button_from);
         buttonFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (fromAdapter.getCount() != 0) mSpinnerFrom.performClick();
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
+                //TODO startActivityForResult
+                startActivity(intent);
             }
         });
-*/
 
-        /*SearchableSpinner spinnerTo = new SearchableSpinner(this);
-        CitiesArrayAdapter mToAdapter = App.getInstance().getToAdapter();
-        spinnerTo.setAdapter(mToAdapter);
-        spinnerTo.setTitle("Пункт прибытия:");
 
-        mDateTextView = (TextView) findViewById(R.id.textview_date);
-        mDateTextView.setOnClickListener(new View.OnClickListener() {
+        Button buttonTo = (Button) findViewById(R.id.button_to);
+        buttonTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
+                //TODO startActivityForResult
+                startActivity(intent);
+            }
+        });
+
+
+        mButtonDate = (Button) findViewById(R.id.button_date);
+        mButtonDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogFragment pickDateDialog = new DatePickerFragment();
                 pickDateDialog.show(getSupportFragmentManager(), "date_picker");
             }
-        });*/
+        });
 /*
         ListView listFrom = (ListView) findViewById(R.id.from_list);
-        CitiesArrayAdapter mFromAdapter = App.getInstance().getFromAdapter();
+        StationsAdapter mFromAdapter = App.getInstance().getFromAdapter();
         listFrom.setAdapter(mFromAdapter);
 
         ListView listTo = (ListView) findViewById(R.id.to_list);
-        CitiesArrayAdapter mToAdapter = App.getInstance().getToAdapter();
+        StationsAdapter mToAdapter = App.getInstance().getToAdapter();
         listTo.setAdapter(mToAdapter);
         */
     }
@@ -134,8 +131,8 @@ public class MainActivity extends AppCompatActivity
     public void onDatePicked(Date date) {
         mDate = date;
         mDateIsPicked = true;
-        if (mDateTextView != null) {
-            mDateTextView.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
+        if (mButtonDate != null) {
+            mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
     }
 
@@ -163,7 +160,7 @@ public class MainActivity extends AppCompatActivity
             mDate.setDay(savedInstanceState.getInt(STATE_DAY));
             mDateIsPicked = savedInstanceState.getBoolean(STATE_IS_PICKED);
 
-            if (mDateTextView != null) mDateTextView.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
+            if (mButtonDate != null) mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
     }
 }
