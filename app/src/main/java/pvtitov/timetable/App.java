@@ -1,6 +1,7 @@
 package pvtitov.timetable;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -10,7 +11,7 @@ import pvtitov.timetable.model.City;
  * Created by Павел on 30.10.2017.
  */
 
-public class App extends Application {
+public class App extends Application{
 
     private static App singleton;
 
@@ -30,8 +31,8 @@ public class App extends Application {
         singleton = this;
 
 
-        mFromAdapter = new StationsAdapter(this, new ArrayList<City>());
-        mToAdapter = new StationsAdapter(this, new ArrayList<City>());
+        mFromAdapter = new StationsAdapter(new ArrayList<City>());
+        mToAdapter = new StationsAdapter(new ArrayList<City>());
         ParseJson mParseJson = new ParseJson(this, mFromAdapter, mToAdapter);
         mParseJson.execute();
     }

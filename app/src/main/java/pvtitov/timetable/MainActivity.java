@@ -26,14 +26,23 @@ public class MainActivity extends AppCompatActivity
     private static final String STATE_DAY = "day";
     private static final String STATE_IS_PICKED = "picked";
 
+    private static final String STATE_CITY_FROM = "city_from";
+    private static final String STATE_CITY_TO = "city_to";
+
     public static final String EXTRA_CHOOSE_ADAPTER = "choose_adapter";
     public static final String ADAPTER_FROM = "from";
     public static final String ADAPTER_TO = "to";
+
+    public static final String EXTRA_PASS_CITY = "pass_city";
+    public static final String EXTRA_TO_OR_FROM = "to_or_from";
+
 
     private Date mDate;
     private Button mButtonDate;
     private boolean mDateIsPicked;
 
+    private String mCityFrom;
+    private String mCityTo;
 
 
     @Override
@@ -59,7 +68,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
-                //TODO startActivityForResult
                 startActivity(intent);
             }
         });
@@ -71,10 +79,22 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
-                //TODO startActivityForResult
                 startActivity(intent);
             }
         });
+
+        if (getIntent().getExtras() != null) {
+            switch (getIntent().getStringExtra(EXTRA_TO_OR_FROM)) {
+                case ADAPTER_FROM:
+                    mCityFrom = getIntent().getStringExtra(EXTRA_PASS_CITY);
+                    buttonFrom.setText(mCityFrom);
+                    break;
+                case ADAPTER_TO:
+                    mCityTo = getIntent().getStringExtra(EXTRA_PASS_CITY);
+                    buttonTo.setText(mCityTo);
+                    break;
+            }
+        }
 
 
         mButtonDate = (Button) findViewById(R.id.button_date);
@@ -85,15 +105,6 @@ public class MainActivity extends AppCompatActivity
                 pickDateDialog.show(getSupportFragmentManager(), "date_picker");
             }
         });
-/*
-        ListView listFrom = (ListView) findViewById(R.id.from_list);
-        StationsAdapter mFromAdapter = App.getInstance().getFromAdapter();
-        listFrom.setAdapter(mFromAdapter);
-
-        ListView listTo = (ListView) findViewById(R.id.to_list);
-        StationsAdapter mToAdapter = App.getInstance().getToAdapter();
-        listTo.setAdapter(mToAdapter);
-        */
     }
 
 
@@ -137,6 +148,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    //TODO сохраняет города Из и В попеременно, взаимноисключающе
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mDateIsPicked) {
@@ -145,6 +158,9 @@ public class MainActivity extends AppCompatActivity
             outState.putInt(STATE_DAY, mDate.getDay());
             outState.putBoolean(STATE_IS_PICKED, mDateIsPicked);
         }
+
+        outState.putString(STATE_CITY_FROM, mCityFrom);
+        outState.putString(STATE_CITY_TO, mCityTo);
 
         super.onSaveInstanceState(outState);
     }
@@ -162,5 +178,8 @@ public class MainActivity extends AppCompatActivity
 
             if (mButtonDate != null) mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
+
+        mCityFrom = savedInstanceState.getString(STATE_CITY_FROM);
+        mCityTo = savedInstanceState.getString(STATE_CITY_TO);
     }
 }
