@@ -55,13 +55,23 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mTextViewCity.setText(mCities.get(position).getCity());
         holder.mTextViewCountry.setText(mCities.get(position).getCountry());
+        holder.mTextViewCountry.setVisibility(View.GONE);
+        if (position == 0) {
+            holder.mTextViewCountry.setVisibility(View.VISIBLE);
+        }
+        if (position > 0) {
+            if (!(mCities.get(position).getCountry()
+                    .equals(mCities.get(position-1).getCountry()))){
+                holder.mTextViewCountry.setVisibility(View.VISIBLE);
+            }
+        }
         holder.mTextViewCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onClick(mCities.get(position));
+                mListener.onClick(mCities.get(holder.getAdapterPosition()));
             }
         });
     }
