@@ -1,16 +1,15 @@
 package pvtitov.timetable;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import pvtitov.timetable.model.City;
-import pvtitov.timetable.model.Station;
 
 /**
  * Created by Павел on 12.11.2017.
@@ -21,7 +20,7 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     StationsAdapter mAdapter;
-    String mToOrFrom = null;
+    String mButtonPressedToOrFrom = null;
 
 
     @Override
@@ -30,9 +29,9 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         setContentView(R.layout.activity_list);
 
         if (getIntent().getExtras() != null)
-            mToOrFrom = getIntent().getStringExtra(MainActivity.EXTRA_CHOOSE_ADAPTER);
+            mButtonPressedToOrFrom = getIntent().getStringExtra(MainActivity.EXTRA_CHOOSE_ADAPTER);
 
-        switch (mToOrFrom){
+        switch (mButtonPressedToOrFrom){
             case MainActivity.ADAPTER_FROM:
                 mAdapter = App.getInstance().getFromAdapter();
                 break;
@@ -50,9 +49,10 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
 
     @Override
     public void onClick(City cityItem) {
-        Intent intent = new Intent(ListActivity.this, MainActivity.class);
+        Intent intent = new Intent();
         intent.putExtra(MainActivity.EXTRA_PASS_CITY, cityItem.getCity());
-        intent.putExtra(MainActivity.EXTRA_TO_OR_FROM, mToOrFrom);
-        startActivity(intent);
+        intent.putExtra(MainActivity.EXTRA_TO_OR_FROM, mButtonPressedToOrFrom);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

@@ -1,5 +1,6 @@
 package pvtitov.timetable;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     public static final String ADAPTER_FROM = "from";
     public static final String ADAPTER_TO = "to";
 
+    public static final int REQUEST_CODE_CITY = 123;
     public static final String EXTRA_PASS_CITY = "pass_city";
     public static final String EXTRA_TO_OR_FROM = "to_or_from";
 
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity
     private Date mDate;
     private Button mButtonDate;
     private boolean mDateIsPicked;
+
+    private Button mButtonTo;
+    private Button mButtonFrom;
 
     private String mCityFrom;
     private String mCityTo;
@@ -62,39 +67,26 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        Button buttonFrom = (Button) findViewById(R.id.button_from);
-        buttonFrom.setOnClickListener(new View.OnClickListener() {
+        mButtonFrom = (Button) findViewById(R.id.button_from);
+        mButtonFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_CITY);
             }
         });
 
 
-        Button buttonTo = (Button) findViewById(R.id.button_to);
-        buttonTo.setOnClickListener(new View.OnClickListener() {
+        mButtonTo = (Button) findViewById(R.id.button_to);
+        mButtonTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_CITY);
             }
         });
-
-        if (getIntent().getExtras() != null) {
-            switch (getIntent().getStringExtra(EXTRA_TO_OR_FROM)) {
-                case ADAPTER_FROM:
-                    mCityFrom = getIntent().getStringExtra(EXTRA_PASS_CITY);
-                    buttonFrom.setText(mCityFrom);
-                    break;
-                case ADAPTER_TO:
-                    mCityTo = getIntent().getStringExtra(EXTRA_PASS_CITY);
-                    buttonTo.setText(mCityTo);
-                    break;
-            }
-        }
 
 
         mButtonDate = (Button) findViewById(R.id.button_date);
@@ -107,6 +99,31 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mCityFrom != null) mButtonFrom.setText(mCityFrom);
+        if (mCityTo != null) mButtonTo.setText(mCityTo);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_CITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                switch (data.getStringExtra(EXTRA_TO_OR_FROM)) {
+                    case ADAPTER_FROM:
+                        mCityFrom = data.getStringExtra(EXTRA_PASS_CITY);
+                        mButtonFrom.setText(mCityFrom);
+                        break;
+                    case ADAPTER_TO:
+                        mCityTo = data.getStringExtra(EXTRA_PASS_CITY);
+                        mButtonTo.setText(mCityTo);
+                        break;
+                }
+            }
+        }
+    }
 
     @Override
     public void onBackPressed() {
