@@ -1,50 +1,51 @@
 package pvtitov.timetable;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
     import java.util.List;
 
-import pvtitov.timetable.model.City;
 
+public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
+    private List<Item> mItems = new ArrayList<>();
+    private OnItemClickListener<Item> mListener;
 
-public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
-    private List<City> mCities = new ArrayList<>();
-    private OnItemClickListener mListener;
-
-    public interface OnItemClickListener{
-        void onClick(City cityItem);
+    public interface OnItemClickListener<Item>{
+        void onClick(Item item);
     }
 
-    public StationsAdapter(List<City> cities){
-        mCities = cities;
+    public interface ItemsGroupedByHeader{
+        String getItem();
+        String getHeader();
+    }
+
+    public StationsAdapter(List<Item> items){
+        mItems = items;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextViewCountry;
+        TextView mHeaderTextViewCountry;
         TextView mTextViewCity;
 
         ViewHolder(View itemView) {
             super(itemView);
             mTextViewCity = itemView.findViewById(R.id.city);
-            mTextViewCountry = itemView.findViewById(R.id.country);
+            mHeaderTextViewCountry = itemView.findViewById(R.id.country);
         }
 
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener<Item> listener){
         mListener = listener;
     }
 
-    public void updateDataset(List<City> cities) {
-        mCities = cities;
+    public void updateDataset(List<Item> items) {
+        mItems = items;
     }
 
     @Override
@@ -56,28 +57,39 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mTextViewCity.setText(mCities.get(position).getCity());
-        holder.mTextViewCountry.setText(mCities.get(position).getCountry());
-        holder.mTextViewCountry.setVisibility(View.GONE);
-        if (position == 0) {
-            holder.mTextViewCountry.setVisibility(View.VISIBLE);
-        }
-        if (position > 0) {
-            if (!(mCities.get(position).getCountry()
-                    .equals(mCities.get(position-1).getCountry()))){
-                holder.mTextViewCountry.setVisibility(View.VISIBLE);
+
+        try{
+            ItemsGroupedByHeader item = (ItemsGroupedByHeader) mItems.get(position);
+            holder.mTextViewCity.setText(item.getItem());
+            holder.mHeaderTextViewCountry.setText(item.getHeader());
+            /*
+            Здесь происходит группирование городов по странам
+            */
+            holder.mHeaderTextViewCountry.setVisibility(View.GONE);
+            if (position == 0) {
+                holder.mHeaderTextViewCountry.setVisibility(View.VISIBLE);
             }
+            if (position > 0) {
+                ItemsGroupedByHeader previousItem = (ItemsGroupedByHeader) mItems.get(position - 1);
+                if (!(item.getHeader().equals(previousItem.getHeader()))){
+                    holder.mHeaderTextViewCountry.setVisibility(View.VISIBLE);
+                }
+            }
+        } catch (ClassCastException e) {
+            throw new ClassCastException();
         }
+
+
         holder.mTextViewCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onClick(mCities.get(holder.getAdapterPosition()));
+                mListener.onClick(mItems.get(holder.getAdapterPosition()));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mCities.size();
+        return mItems.size();
     }
 }

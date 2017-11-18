@@ -19,8 +19,8 @@ public class App extends Application{
         return singleton;
     }
 
-    private StationsAdapter mFromAdapter;
-    private StationsAdapter mToAdapter;
+    private StationsAdapter<City> mFromAdapter;
+    private StationsAdapter<City> mToAdapter;
 
     public StationsAdapter getFromAdapter() {return mFromAdapter;}
     public StationsAdapter getToAdapter() {return mToAdapter;}
@@ -31,8 +31,8 @@ public class App extends Application{
         singleton = this;
 
 
-        mFromAdapter = new StationsAdapter(new ArrayList<City>());
-        mToAdapter = new StationsAdapter(new ArrayList<City>());
+        mFromAdapter = new StationsAdapter<>(new ArrayList<City>());
+        mToAdapter = new StationsAdapter<>(new ArrayList<City>());
         ParseJson mParseJson = new ParseJson(this, mFromAdapter, mToAdapter);
         mParseJson.execute();
     }

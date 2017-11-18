@@ -3,11 +3,13 @@ package pvtitov.timetable.model;
 
 import java.util.List;
 
+import pvtitov.timetable.StationsAdapter;
+
 /**
  * Created by Павел on 21.10.2017.
  */
 
-public class City {
+public class City implements StationsAdapter.ItemsGroupedByHeader {
     private String country;
     private String city;
     private Point point;
@@ -81,5 +83,15 @@ public class City {
     @Override
     public String toString() {
         return city;
+    }
+
+    @Override
+    public String getItem() {
+        return city;
+    }
+
+    @Override
+    public String getHeader() {
+        return country;
     }
 }

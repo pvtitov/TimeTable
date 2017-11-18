@@ -15,7 +15,7 @@ import pvtitov.timetable.model.City;
  * Created by Павел on 12.11.2017.
  */
 
-public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener{
+public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<City>{
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
