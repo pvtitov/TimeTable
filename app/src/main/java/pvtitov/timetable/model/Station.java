@@ -78,4 +78,9 @@ public class Station {
     public void setStationId(int stationId) {
         this.stationId = stationId;
     }
+
+    @Override
+    public String toString() {
+        return station;
+    }
 }

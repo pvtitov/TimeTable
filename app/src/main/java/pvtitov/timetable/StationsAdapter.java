@@ -14,8 +14,9 @@ import java.util.ArrayList;
 public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     private List<Item> mItems = new ArrayList<>();
     private OnItemClickListener<Item> mListener;
+    private String mQuery;
 
-    public interface OnItemClickListener<Item>{
+    interface OnItemClickListener<Item>{
         void onClick(Item item);
     }
 
@@ -24,9 +25,13 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         String getHeader();
     }
 
-    public StationsAdapter(List<Item> items){
+    StationsAdapter(List<Item> items){
         mItems = items;
     }
+
+
+    List<Item> getDataList(){return mItems;}
+
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mHeaderTextViewCountry;
@@ -40,13 +45,17 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
 
     }
 
-    public void setOnItemClickListener(OnItemClickListener<Item> listener){
+    void setOnItemClickListener(OnItemClickListener<Item> listener){
         mListener = listener;
     }
 
-    public void updateDataset(List<Item> items) {
+    /*
+    Метод вызывается, чтобы обновить данные в адаптере, когда завершится разбор файла со станциями.
+     */
+    void updateDataset(List<Item> items) {
         mItems = items;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {

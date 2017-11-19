@@ -79,7 +79,7 @@ public class City implements StationsAdapter.ItemsGroupedByHeader {
         this.cityId = cityId;
     }
 
-    // Нужен для CustomArrayAdapter<City>
+    // Нужен для фильтрации по поисковому запросу
     @Override
     public String toString() {
         return city;

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         mButtonFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                Intent intent = new Intent(Intent.ACTION_CHOOSER, null, MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
                 startActivityForResult(intent, REQUEST_CODE_CITY);
             }
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
         mButtonTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                Intent intent = new Intent(Intent.ACTION_CHOOSER, null, MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
                 startActivityForResult(intent, REQUEST_CODE_CITY);
             }

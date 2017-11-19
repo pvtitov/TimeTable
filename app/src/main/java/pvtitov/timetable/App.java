@@ -1,7 +1,6 @@
 package pvtitov.timetable;
 
 import android.app.Application;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -22,8 +21,8 @@ public class App extends Application{
     private StationsAdapter<City> mFromAdapter;
     private StationsAdapter<City> mToAdapter;
 
-    public StationsAdapter getFromAdapter() {return mFromAdapter;}
-    public StationsAdapter getToAdapter() {return mToAdapter;}
+    public StationsAdapter<City> getFromAdapter() {return mFromAdapter;}
+    public StationsAdapter<City> getToAdapter() {return mToAdapter;}
 
     @Override
     public void onCreate() {

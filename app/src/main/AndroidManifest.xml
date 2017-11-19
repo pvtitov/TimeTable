@@ -21,7 +21,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".InfoActivity"/>
-        <activity android:name=".ListActivity"/>
+        <activity android:name=".ListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
     </application>
 
 </manifest>
