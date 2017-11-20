@@ -1,7 +1,6 @@
 package pvtitov.timetable;
 
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +26,8 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
 
     String mChooseToOrFrom = null;
     StationsAdapter<City> mAdapter;
+    Intent mIntent;
+    Bundle mBundle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,14 +49,16 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         recyclerView.setLayoutManager(layoutManager);
 
         // Ссылка на любой (из двух) Intent, запустивший ListActivity
-        Intent intent = getIntent();
+        mIntent = getIntent();
+        //Получаем данные, передаваемые с любым Intent
+        mChooseToOrFrom = mIntent.getStringExtra(MainActivity.TO_OR_FROM);
+        mBundle = mIntent.getBundleExtra(MainActivity.BUNDLE);
 
         /*
         Проверяем у Intent поле action.
         ACTION_CHOOSER был присвоен Intent из MainActivity
          */
-        if (Intent.ACTION_CHOOSER.equals(intent.getAction())) {
-            mChooseToOrFrom = intent.getStringExtra(MainActivity.EXTRA_CHOOSE_ADAPTER);
+        if (Intent.ACTION_PICK.equals(mIntent.getAction())) {
             mAdapter = getAdapterFromApp();
         }
 
@@ -63,9 +66,9 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         Проверяем у Intent поле action.
         ACTION_SEARCH - действие Intent, посылаемого поисковым сервисом
          */
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            mChooseToOrFrom = intent.getStringExtra(EXTRA_TO_OR_FROM);
+        if (Intent.ACTION_SEARCH.equals(mIntent.getAction())) {
+            String query = mIntent.getStringExtra(SearchManager.QUERY);
+            mChooseToOrFrom = mIntent.getStringExtra(EXTRA_TO_OR_FROM);
             mAdapter = filterAdapter(getAdapterFromApp(), query);
         }
 
@@ -92,10 +95,10 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         StationsAdapter<City> adapter = null;
         if (mChooseToOrFrom != null) {
             switch (mChooseToOrFrom){
-                case MainActivity.ADAPTER_FROM:
+                case MainActivity.FROM:
                     adapter = App.getInstance().getFromAdapter();
                     break;
-                case MainActivity.ADAPTER_TO:
+                case MainActivity.TO:
                     adapter = App.getInstance().getToAdapter();
                     break;
             }
@@ -105,19 +108,21 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
 
     @Override
     public void onClick(City cityItem) {
-        Intent intent = new Intent();
-        intent.putExtra(MainActivity.EXTRA_PASS_CITY, cityItem.getCity());
-        intent.putExtra(MainActivity.EXTRA_TO_OR_FROM, mChooseToOrFrom);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        Intent intent = new Intent(Intent.ACTION_ANSWER, null, ListActivity.this, MainActivity.class);
+        intent.putExtra(MainActivity.CITY, cityItem.getCity());
+        intent.putExtra(MainActivity.TO_OR_FROM, mChooseToOrFrom);
+        intent.putExtra(MainActivity.BUNDLE, mBundle);
+        startActivity(intent);
     }
 
 
     @Override
     public void startActivity(Intent intent) {
 
-        if (Intent.ACTION_SEARCH.equals(intent.getAction()))
-            intent.putExtra(EXTRA_TO_OR_FROM, mChooseToOrFrom);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            intent.putExtra(MainActivity.TO_OR_FROM, mChooseToOrFrom);
+            intent.putExtra(MainActivity.BUNDLE, mBundle);
+        }
 
         super.startActivity(intent);
     }
