@@ -22,9 +22,7 @@ import pvtitov.timetable.model.City;
 
 public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<City>{
 
-    private static final String EXTRA_TO_OR_FROM = "to_or_from";
-
-    String mChooseToOrFrom = null;
+    String mChooseToOrFrom;
     StationsAdapter<City> mAdapter;
     Intent mIntent;
     Bundle mBundle;
@@ -51,24 +49,24 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         // Ссылка на любой (из двух) Intent, запустивший ListActivity
         mIntent = getIntent();
         //Получаем данные, передаваемые с любым Intent
-        mChooseToOrFrom = mIntent.getStringExtra(MainActivity.TO_OR_FROM);
-        mBundle = mIntent.getBundleExtra(MainActivity.BUNDLE);
 
-        /*
-        Проверяем у Intent поле action.
-        ACTION_CHOOSER был присвоен Intent из MainActivity
-         */
-        if (Intent.ACTION_PICK.equals(mIntent.getAction())) {
-            mAdapter = getAdapterFromApp();
-        }
 
         /*
         Проверяем у Intent поле action.
         ACTION_SEARCH - действие Intent, посылаемого поисковым сервисом
          */
+        // Intent из MainActivity
+        if (! Intent.ACTION_SEARCH.equals(mIntent.getAction())) {
+            mChooseToOrFrom = mIntent.getStringExtra(MainActivity.TO_OR_FROM);
+            mBundle = mIntent.getBundleExtra(MainActivity.BUNDLE);
+            mAdapter = getAdapterFromApp();
+        }
+
+        // Intent-поиск
         if (Intent.ACTION_SEARCH.equals(mIntent.getAction())) {
+            mChooseToOrFrom = mIntent.getStringExtra(MainActivity.TO_OR_FROM);
+            mBundle = mIntent.getBundleExtra(MainActivity.BUNDLE);
             String query = mIntent.getStringExtra(SearchManager.QUERY);
-            mChooseToOrFrom = mIntent.getStringExtra(EXTRA_TO_OR_FROM);
             mAdapter = filterAdapter(getAdapterFromApp(), query);
         }
 
@@ -108,7 +106,7 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
 
     @Override
     public void onClick(City cityItem) {
-        Intent intent = new Intent(Intent.ACTION_ANSWER, null, ListActivity.this, MainActivity.class);
+        Intent intent = new Intent(ListActivity.this, MainActivity.class);
         intent.putExtra(MainActivity.CITY, cityItem.getCity());
         intent.putExtra(MainActivity.TO_OR_FROM, mChooseToOrFrom);
         intent.putExtra(MainActivity.BUNDLE, mBundle);
