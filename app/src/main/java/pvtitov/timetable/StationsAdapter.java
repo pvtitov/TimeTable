@@ -29,10 +29,15 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         mItems = items;
     }
 
+<<<<<<< HEAD
 
     List<Item> getDataList(){return mItems;}
 
 
+=======
+    List<Item> getDataList(){return mItems;}
+
+>>>>>>> develop2
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mHeaderTextViewCountry;
         TextView mTextViewCity;
