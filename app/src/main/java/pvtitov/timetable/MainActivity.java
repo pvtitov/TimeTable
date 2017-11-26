@@ -165,8 +165,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    //TODO сохраняет города Из и В попеременно, взаимноисключающе
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mDateIsPicked) {

@@ -15,7 +15,7 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     private List<Item> mItems = new ArrayList<>();
     private OnItemClickListener<Item> mListener;
 
-    public interface OnItemClickListener<Item>{
+    interface OnItemClickListener<Item>{
         void onClick(Item item);
     }
 
@@ -24,9 +24,11 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         String getHeader();
     }
 
-    public StationsAdapter(List<Item> items){
+    StationsAdapter(List<Item> items){
         mItems = items;
     }
+
+    List<Item> getDataList(){return mItems;}
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mHeaderTextViewCountry;
