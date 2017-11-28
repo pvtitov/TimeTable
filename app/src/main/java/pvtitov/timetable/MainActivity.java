@@ -27,15 +27,15 @@ public class MainActivity extends AppCompatActivity
     private static final String STATE_DAY = "day";
     private static final String STATE_IS_PICKED = "picked";
 
-    private static final String STATE_CITY_FROM = "city_from";
-    private static final String STATE_CITY_TO = "city_to";
+    private static final String STATE_STATION_FROM = "station_from";
+    private static final String STATE_STATION_TO = "station_to";
 
     public static final String EXTRA_CHOOSE_ADAPTER = "choose_adapter";
     public static final String ADAPTER_FROM = "from";
     public static final String ADAPTER_TO = "to";
 
-    public static final int REQUEST_CODE_CITY = 123;
-    public static final String EXTRA_PASS_CITY = "pass_city";
+    public static final int REQUEST_CODE_STATION = 123;
+    public static final String EXTRA_PASS_STATION = "pass_station";
     public static final String EXTRA_TO_OR_FROM = "to_or_from";
 
 
@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity
     private Button mButtonTo;
     private Button mButtonFrom;
 
-    private String mCityFrom;
-    private String mCityTo;
+    private String mStationFrom;
+    private String mStationTo;
 
 
     @Override
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
-                startActivityForResult(intent, REQUEST_CODE_CITY);
+                startActivityForResult(intent, REQUEST_CODE_STATION);
             }
         });
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
-                startActivityForResult(intent, REQUEST_CODE_CITY);
+                startActivityForResult(intent, REQUEST_CODE_STATION);
             }
         });
 
@@ -103,22 +103,22 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if (mCityFrom != null) mButtonFrom.setText(mCityFrom);
-        if (mCityTo != null) mButtonTo.setText(mCityTo);
+        if (mStationFrom != null) mButtonFrom.setText(mStationFrom);
+        if (mStationTo != null) mButtonTo.setText(mStationTo);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_CITY) {
+        if (requestCode == REQUEST_CODE_STATION) {
             if (resultCode == Activity.RESULT_OK) {
                 switch (data.getStringExtra(EXTRA_TO_OR_FROM)) {
                     case ADAPTER_FROM:
-                        mCityFrom = data.getStringExtra(EXTRA_PASS_CITY);
-                        mButtonFrom.setText(mCityFrom);
+                        mStationFrom = data.getStringExtra(EXTRA_PASS_STATION);
+                        mButtonFrom.setText(mStationFrom);
                         break;
                     case ADAPTER_TO:
-                        mCityTo = data.getStringExtra(EXTRA_PASS_CITY);
-                        mButtonTo.setText(mCityTo);
+                        mStationTo = data.getStringExtra(EXTRA_PASS_STATION);
+                        mButtonTo.setText(mStationTo);
                         break;
                 }
             }
@@ -174,8 +174,8 @@ public class MainActivity extends AppCompatActivity
             outState.putBoolean(STATE_IS_PICKED, mDateIsPicked);
         }
 
-        outState.putString(STATE_CITY_FROM, mCityFrom);
-        outState.putString(STATE_CITY_TO, mCityTo);
+        outState.putString(STATE_STATION_FROM, mStationFrom);
+        outState.putString(STATE_STATION_TO, mStationTo);
 
         super.onSaveInstanceState(outState);
     }
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity
             if (mButtonDate != null) mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
 
-        mCityFrom = savedInstanceState.getString(STATE_CITY_FROM);
-        mCityTo = savedInstanceState.getString(STATE_CITY_TO);
+        mStationFrom = savedInstanceState.getString(STATE_STATION_FROM);
+        mStationTo = savedInstanceState.getString(STATE_STATION_TO);
     }
 }

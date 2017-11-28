@@ -2,7 +2,6 @@ package pvtitov.timetable;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,23 +9,24 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import pvtitov.timetable.model.City;
 import pvtitov.timetable.model.Model;
+import pvtitov.timetable.model.Point;
+import pvtitov.timetable.model.Station;
 
 public class ParseJson extends AsyncTask<Void, Void, Model> {
 
     private Context mContext;
-    private StationsAdapter<City> mFromAdapter;
-    private StationsAdapter<City> mToAdapter;
+    private StationsAdapter<Station> mFromAdapter;
+    private StationsAdapter<Station> mToAdapter;
 
 
     public ParseJson(Context context,
-                     StationsAdapter<City> fromAdapter,
-                     StationsAdapter<City> toAdapter) {
+                     StationsAdapter<Station> fromAdapter,
+                     StationsAdapter<Station> toAdapter) {
         mContext = context;
         mFromAdapter = fromAdapter;
         mToAdapter = toAdapter;
@@ -52,7 +52,6 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
             model.setCitiesTo(parseJSONArray(root.getJSONArray("citiesTo")));
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d("happy", Arrays.toString(e.getStackTrace()));
         }
         return model;
     }
@@ -63,27 +62,36 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
     protected void onPostExecute(Model model) {
         super.onPostExecute(model);
 
-        List<City> citiesFrom = new ArrayList<>();
-        List<City> citiesTo = new ArrayList<>();
+        List<Station> stationsFrom = new ArrayList<>();
+        List<Station> stationsTo = new ArrayList<>();
+
+        City city;
 
         for (int i = 0; i < model.getCitiesFrom().size(); i++) {
-            citiesFrom.add(model.getCityFrom(i));
+            city = model.getCityFrom(i);
+            for (int j = 0; j < city.getStations().size(); j++) {
+                stationsFrom.add(city.getStation(j));
+            }
         }
 
         for (int i = 0; i < model.getCitiesTo().size(); i++) {
-            citiesTo.add(model.getCityTo(i));
+            city = model.getCityTo(i);
+            for (int j = 0; j < city.getStations().size(); j++) {
+                stationsTo.add(city.getStation(j));
+            }
         }
 
-        mFromAdapter.updateDataset(citiesFrom);
+        mFromAdapter.updateDataset(stationsFrom);
         mFromAdapter.notifyDataSetChanged();
 
-        mToAdapter.updateDataset(citiesTo);
+        mToAdapter.updateDataset(stationsTo);
         mToAdapter.notifyDataSetChanged();
     }
 
     private List<City> parseJSONArray(JSONArray citiesJSONArray) throws JSONException {
 
         List<City> cities = new ArrayList<>();
+        List<Station> stations = new ArrayList<>();
 
         for (int i = 0; i < citiesJSONArray.length(); i++){
             JSONObject cityJSONObject = citiesJSONArray.getJSONObject(i);
@@ -95,7 +103,7 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
             city.setCity(cityJSONObject.getString("cityTitle"));
             city.setRegion(cityJSONObject.getString("regionTitle"));
 
-                /*
+
                 JSONObject cityPointJSONObject = cityJSONObject.getJSONObject("point");
                 Point pointOfCity = new Point();
                 pointOfCity.setLatitude(cityPointJSONObject.getDouble("latitude"));
@@ -104,7 +112,6 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
 
 
                 JSONArray stationsJSONArray = cityJSONObject.getJSONArray("stations");
-                List<Station> stations = new ArrayList<>();
 
                 for (int j = 0; j < stationsJSONArray.length(); j++) {
                     JSONObject stationJSONObject = stationsJSONArray.getJSONObject(j);
@@ -126,7 +133,7 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
 
                     stations.add(station);
                 }
-                */
+                city.setStations(stations);
             cities.add(city);
         }
 

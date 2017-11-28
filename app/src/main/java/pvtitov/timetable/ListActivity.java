@@ -11,23 +11,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pvtitov.timetable.model.City;
+import pvtitov.timetable.model.Station;
 
 /**
  * Created by Павел on 12.11.2017.
  */
 
-public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<City>{
+public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<Station>{
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     String mRequestedToOrFrom = null;
-    StationsAdapter<City> mAdapter;
+    StationsAdapter<Station> mAdapter;
 
 
     @Override
@@ -53,25 +53,25 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
             @Override
             public void onClick(View view) {
                 String query = searchEditText.getText().toString();
-                mAdapter = filterAdapter(mAdapter, query);
+                mAdapter = filterAdapter(getProperAdapter(mRequestedToOrFrom), query);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.setOnItemClickListener(ListActivity.this);
             }
         });
     }
 
-    private StationsAdapter<City> filterAdapter(StationsAdapter<City> adapter, String query) {
-        List<City> oldList = adapter.getDataList();
-        List<City> newList = new ArrayList<>();
-        for (City city: oldList) {
-            if (city.getCity().substring(0, query.length()).equalsIgnoreCase(query)) newList.add(city);
+    private StationsAdapter<Station> filterAdapter(StationsAdapter<Station> adapter, String query) {
+        List<Station> oldList = adapter.getDataList();
+        List<Station> newList = new ArrayList<>();
+        for (Station station: oldList) {
+            if (station.getStation().substring(0, query.length()).equalsIgnoreCase(query)) newList.add(station);
         }
         return new StationsAdapter<>(newList);
     }
 
     // Загружаем список станций отправления, либо станций прибытия
-    private StationsAdapter<City> getProperAdapter(String requestedToOrFrom) {
-        StationsAdapter<City> adapter = null;
+    private StationsAdapter<Station> getProperAdapter(String requestedToOrFrom) {
+        StationsAdapter<Station> adapter = null;
         if (requestedToOrFrom != null) {
             switch (requestedToOrFrom){
                 case MainActivity.ADAPTER_FROM:
@@ -86,9 +86,9 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
     }
 
     @Override
-    public void onClick(City cityItem) {
+    public void onClick(Station stationItem) {
         Intent intent = new Intent();
-        intent.putExtra(MainActivity.EXTRA_PASS_CITY, cityItem.getCity());
+        intent.putExtra(MainActivity.EXTRA_PASS_STATION, stationItem.getStation());
         intent.putExtra(MainActivity.EXTRA_TO_OR_FROM, mRequestedToOrFrom);
         setResult(Activity.RESULT_OK, intent);
         finish();

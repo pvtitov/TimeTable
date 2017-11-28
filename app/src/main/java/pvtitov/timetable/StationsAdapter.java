@@ -20,8 +20,9 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     }
 
     public interface ItemsGroupedByHeader{
+        String getSmallHeader();
+        String getBigHeader();
         String getItem();
-        String getHeader();
     }
 
     StationsAdapter(List<Item> items){
@@ -31,13 +32,15 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     List<Item> getDataList(){return mItems;}
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mHeaderTextViewCountry;
-        TextView mTextViewCity;
+        TextView mHeaderBig;
+        TextView mHeaderSmall;
+        TextView mItem;
 
         ViewHolder(View itemView) {
             super(itemView);
-            mTextViewCity = itemView.findViewById(R.id.city);
-            mHeaderTextViewCountry = itemView.findViewById(R.id.country);
+            mHeaderSmall = itemView.findViewById(R.id.city);
+            mHeaderBig = itemView.findViewById(R.id.country);
+            mItem = itemView.findViewById(R.id.station);
         }
 
     }
@@ -62,19 +65,25 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
 
         try{
             ItemsGroupedByHeader item = (ItemsGroupedByHeader) mItems.get(position);
-            holder.mTextViewCity.setText(item.getItem());
-            holder.mHeaderTextViewCountry.setText(item.getHeader());
+            holder.mHeaderBig.setText(item.getBigHeader());
+            holder.mHeaderSmall.setText(item.getSmallHeader());
+            holder.mItem.setText(item.getItem());
             /*
             Здесь происходит группирование городов по странам
             */
-            holder.mHeaderTextViewCountry.setVisibility(View.GONE);
+            holder.mHeaderBig.setVisibility(View.GONE);
+            holder.mHeaderSmall.setVisibility(View.GONE);
             if (position == 0) {
-                holder.mHeaderTextViewCountry.setVisibility(View.VISIBLE);
+                holder.mHeaderBig.setVisibility(View.VISIBLE);
+                holder.mHeaderSmall.setVisibility(View.VISIBLE);
             }
             if (position > 0) {
                 ItemsGroupedByHeader previousItem = (ItemsGroupedByHeader) mItems.get(position - 1);
-                if (!(item.getHeader().equals(previousItem.getHeader()))){
-                    holder.mHeaderTextViewCountry.setVisibility(View.VISIBLE);
+                if (!(item.getBigHeader().equals(previousItem.getBigHeader()))){
+                    holder.mHeaderBig.setVisibility(View.VISIBLE);
+                }
+                if (!(item.getSmallHeader().equals(previousItem.getSmallHeader()))){
+                    holder.mHeaderSmall.setVisibility(View.VISIBLE);
                 }
             }
         } catch (ClassCastException e) {
@@ -82,7 +91,7 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         }
 
 
-        holder.mTextViewCity.setOnClickListener(new View.OnClickListener() {
+        holder.mHeaderSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListener.onClick(mItems.get(holder.getAdapterPosition()));

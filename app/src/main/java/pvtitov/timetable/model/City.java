@@ -9,7 +9,7 @@ import pvtitov.timetable.StationsAdapter;
  * Created by Павел on 21.10.2017.
  */
 
-public class City implements StationsAdapter.ItemsGroupedByHeader {
+public class City{
     private String country;
     private String city;
     private Point point;
@@ -77,21 +77,5 @@ public class City implements StationsAdapter.ItemsGroupedByHeader {
 
     public void setCityId(int cityId) {
         this.cityId = cityId;
-    }
-
-    // Нужен для CustomArrayAdapter<City>
-    @Override
-    public String toString() {
-        return city;
-    }
-
-    @Override
-    public String getItem() {
-        return city;
-    }
-
-    @Override
-    public String getHeader() {
-        return country;
     }
 }

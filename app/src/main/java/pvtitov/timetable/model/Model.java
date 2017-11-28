@@ -19,8 +19,8 @@ public class Model {
         return citiesFrom.get(i);
     }
 
-    public void setCitiesFrom(List<City> citiesFrom) {
-        this.citiesFrom = citiesFrom;
+    public void setCitiesFrom(List<City> cityFrom) {
+        this.citiesFrom = cityFrom;
     }
 
     public List<City> getCitiesTo() {
