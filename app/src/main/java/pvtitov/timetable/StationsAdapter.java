@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-    import java.util.List;
+import java.util.List;
 
 
 public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     private List<Item> mItems = new ArrayList<>();
     private OnItemClickListener<Item> mListener;
-    private String mQuery;
 
     interface OnItemClickListener<Item>{
         void onClick(Item item);
@@ -46,21 +45,18 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
 
     }
 
-    void setOnItemClickListener(OnItemClickListener<Item> listener){
+    public void setOnItemClickListener(OnItemClickListener<Item> listener){
         mListener = listener;
     }
 
-    /*
-    Метод вызывается, чтобы обновить данные в адаптере, когда завершится разбор файла со станциями.
-     */
-    void updateDataset(List<Item> items) {
+    public void updateDataset(List<Item> items) {
         mItems = items;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
+        //TODO change View parameters here
         return new ViewHolder(view);
     }
 

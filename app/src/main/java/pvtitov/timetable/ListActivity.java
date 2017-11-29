@@ -1,5 +1,6 @@
 package pvtitov.timetable;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import pvtitov.timetable.model.City;
 import pvtitov.timetable.model.Station;
 
 /**
@@ -26,6 +28,7 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
     RecyclerView.LayoutManager mLayoutManager;
     String mRequestedToOrFrom = null;
     StationsAdapter<Station> mAdapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

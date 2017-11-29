@@ -3,7 +3,6 @@ package pvtitov.timetable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+
 import pvtitov.timetable.model.Date;
+
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DatePickerFragment.DateConsumer {
-
-    public static final String TAG_DATE_PICKER = "tag_date_picker";
 
     private static final String STATE_YEAR = "year";
     private static final String STATE_MONTH = "month";
@@ -50,14 +49,11 @@ public class MainActivity extends AppCompatActivity
     private String mStationFrom;
     private String mStationTo;
 
-    private Intent mIntent;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,44 +66,46 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Создаем единый Intent
-        mIntent = new Intent(MainActivity.this, ListActivity.class);
 
-        // Кнопка - станция отправления
         mButtonFrom = (Button) findViewById(R.id.button_from);
         mButtonFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
-                startActivityForResult(mIntent, REQUEST_CODE_STATION);
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
+                startActivityForResult(intent, REQUEST_CODE_STATION);
             }
         });
-        if (mStationFrom != null) mButtonFrom.setText(mStationFrom);
 
-        // Кнопка - станция прибытия
+
         mButtonTo = (Button) findViewById(R.id.button_to);
         mButtonTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIntent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
-                startActivityForResult(mIntent, REQUEST_CODE_STATION);
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
+                intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
+                startActivityForResult(intent, REQUEST_CODE_STATION);
             }
         });
-        if (mStationTo != null) mButtonTo.setText(mStationTo);
 
 
-        // Кнопка - выбор даты
         mButtonDate = (Button) findViewById(R.id.button_date);
         mButtonDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogFragment pickDateDialog = new DatePickerFragment();
-                pickDateDialog.show(getSupportFragmentManager(), TAG_DATE_PICKER);
+                pickDateDialog.show(getSupportFragmentManager(), "date_picker");
             }
         });
-        if (mDateIsPicked && mDate != null) mButtonDate.setText(mDate.toString());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mStationFrom != null) mButtonFrom.setText(mStationFrom);
+        if (mStationTo != null) mButtonTo.setText(mStationTo);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -138,8 +136,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
@@ -161,20 +160,18 @@ public class MainActivity extends AppCompatActivity
         mDate = date;
         mDateIsPicked = true;
         if (mButtonDate != null) {
-            mButtonDate.setText(mDate.toString());
+            mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
     }
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(STATE_STATION_FROM, mStationFrom);
-        outState.putString(STATE_STATION_TO, mStationTo);
-        outState.putBoolean(STATE_IS_PICKED, mDateIsPicked);
         if (mDateIsPicked) {
             outState.putInt(STATE_YEAR, mDate.getYear());
             outState.putInt(STATE_MONTH, mDate.getMonth());
             outState.putInt(STATE_DAY, mDate.getDay());
+            outState.putBoolean(STATE_IS_PICKED, mDateIsPicked);
         }
 
         outState.putString(STATE_STATION_FROM, mStationFrom);
@@ -183,19 +180,21 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        mStationFrom = savedInstanceState.getString(STATE_STATION_FROM);
-        mStationTo = savedInstanceState.getString(STATE_STATION_TO);
-        mDateIsPicked = savedInstanceState.getBoolean(STATE_IS_PICKED);
-        if (mDateIsPicked) {
+        if (savedInstanceState.getBoolean(STATE_IS_PICKED)) {
             mDate = new Date();
             mDate.setYear(savedInstanceState.getInt(STATE_YEAR));
             mDate.setMonth(savedInstanceState.getInt(STATE_MONTH));
             mDate.setDay(savedInstanceState.getInt(STATE_DAY));
+            mDateIsPicked = savedInstanceState.getBoolean(STATE_IS_PICKED);
+
+            if (mButtonDate != null) mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
+
+        mStationFrom = savedInstanceState.getString(STATE_STATION_FROM);
+        mStationTo = savedInstanceState.getString(STATE_STATION_TO);
     }
 }
