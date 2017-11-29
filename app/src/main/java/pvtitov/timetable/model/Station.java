@@ -1,11 +1,13 @@
 package pvtitov.timetable.model;
 
 
+import pvtitov.timetable.StationsAdapter;
+
 /**
  * Created by Павел on 21.10.2017.
  */
 
-public class Station {
+public class Station implements StationsAdapter.ItemsGroupedByHeader {
     private String country;
     private String city;
     private Point point;
@@ -79,8 +81,24 @@ public class Station {
         this.stationId = stationId;
     }
 
+    // Нужен для CustomArrayAdapter<City>
     @Override
     public String toString() {
+        return station;
+    }
+
+    @Override
+    public String getSmallHeader() {
+        return city;
+    }
+
+    @Override
+    public String getBigHeader() {
+        return country;
+    }
+
+    @Override
+    public String getItem() {
         return station;
     }
 }

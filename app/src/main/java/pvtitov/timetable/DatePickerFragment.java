@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
 import java.util.Calendar;
 

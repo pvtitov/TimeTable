@@ -4,7 +4,8 @@ import android.app.Application;
 
 import java.util.ArrayList;
 
-import pvtitov.timetable.model.City;
+
+import pvtitov.timetable.model.Station;
 
 /**
  * Created by Павел on 30.10.2017.
@@ -18,11 +19,11 @@ public class App extends Application{
         return singleton;
     }
 
-    private StationsAdapter<City> mFromAdapter;
-    private StationsAdapter<City> mToAdapter;
+    private StationsAdapter<Station> mFromAdapter;
+    private StationsAdapter<Station> mToAdapter;
 
-    public StationsAdapter<City> getFromAdapter() {return mFromAdapter;}
-    public StationsAdapter<City> getToAdapter() {return mToAdapter;}
+    public StationsAdapter<Station> getFromAdapter() {return mFromAdapter;}
+    public StationsAdapter<Station> getToAdapter() {return mToAdapter;}
 
     @Override
     public void onCreate() {
@@ -30,8 +31,8 @@ public class App extends Application{
         singleton = this;
 
 
-        mFromAdapter = new StationsAdapter<>(new ArrayList<City>());
-        mToAdapter = new StationsAdapter<>(new ArrayList<City>());
+        mFromAdapter = new StationsAdapter<>(new ArrayList<Station>());
+        mToAdapter = new StationsAdapter<>(new ArrayList<Station>());
         ParseJson mParseJson = new ParseJson(this, mFromAdapter, mToAdapter);
         mParseJson.execute();
     }
