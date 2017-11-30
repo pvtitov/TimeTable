@@ -64,7 +64,9 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         List<Station> oldList = adapter.getDataList();
         List<Station> newList = new ArrayList<>();
         for (Station station: oldList) {
-            if (station.getStation().substring(0, query.length()).equalsIgnoreCase(query)) newList.add(station);
+            if (station.getStation().toLowerCase()
+                    .contains(query.toLowerCase()))
+                newList.add(station);
         }
         return new StationsAdapter<>(newList);
     }

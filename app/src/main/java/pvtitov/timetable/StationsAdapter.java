@@ -34,13 +34,13 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mHeaderBig;
         TextView mHeaderSmall;
-        TextView mItem;
+        TextView mItemTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
             mHeaderSmall = itemView.findViewById(R.id.city);
             mHeaderBig = itemView.findViewById(R.id.country);
-            mItem = itemView.findViewById(R.id.station);
+            mItemTextView = itemView.findViewById(R.id.station);
         }
 
     }
@@ -67,7 +67,7 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
             ItemsGroupedByHeader item = (ItemsGroupedByHeader) mItems.get(position);
             holder.mHeaderBig.setText(item.getBigHeader());
             holder.mHeaderSmall.setText(item.getSmallHeader());
-            holder.mItem.setText(item.getItem());
+            holder.mItemTextView.setText(item.getItem());
             /*
             Здесь происходит группирование городов по странам
             */
@@ -91,7 +91,7 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         }
 
 
-        holder.mHeaderSmall.setOnClickListener(new View.OnClickListener() {
+        holder.mItemTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListener.onClick(mItems.get(holder.getAdapterPosition()));
