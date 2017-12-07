@@ -25,6 +25,8 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         String getItem();
     }
 
+    StationsAdapter(){}
+
     StationsAdapter(List<Item> items){
         mItems = items;
     }
@@ -45,13 +47,18 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
 
     }
 
-    public void setOnItemClickListener(OnItemClickListener<Item> listener){
+    void setOnItemClickListener(OnItemClickListener<Item> listener){
         mListener = listener;
     }
 
-    public void updateDataset(List<Item> items) {
+    void updateDataset(List<Item> items) {
         mItems = items;
     }
+
+    void addItem(Item item){
+        mItems.add(item);
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
@@ -94,7 +101,8 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         holder.mItemTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onClick(mItems.get(holder.getAdapterPosition()));
+                if (mItems != null)
+                    mListener.onClick(mItems.get(holder.getAdapterPosition()));
             }
         });
     }

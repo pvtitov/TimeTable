@@ -17,25 +17,25 @@ import pvtitov.timetable.model.Model;
 import pvtitov.timetable.model.Point;
 import pvtitov.timetable.model.Station;
 
-public class ParseJson extends AsyncTask<Void, Void, Model> {
+class ParseJson extends AsyncTask<Void, Void, Model> {
 
     private Context mContext;
-    private StationsAdapter<Station> mFromAdapter;
-    private StationsAdapter<Station> mToAdapter;
+    private Model mModel;
+    private StationsAdapter<Station> mAdapter;
 
-
-    public ParseJson(Context context,
-                     StationsAdapter<Station> fromAdapter,
-                     StationsAdapter<Station> toAdapter) {
+    ParseJson(Context context,
+              Model model) {
         mContext = context;
-        mFromAdapter = fromAdapter;
-        mToAdapter = toAdapter;
+        mModel = model;
     }
 
 
     @Override
     protected Model doInBackground(Void... voids) {
-        // Чтение из файла. Преобразование всего файла в String.
+
+        /*
+        Чтение из файла. Преобразование всего файла в String.
+        */
         InputStream inputStream = mContext.getResources().openRawResource(R.raw.all_stations);
         Scanner scanner = new Scanner(inputStream);
         StringBuilder stringBuilder = new StringBuilder();
@@ -44,51 +44,29 @@ public class ParseJson extends AsyncTask<Void, Void, Model> {
         }
         String jsonFileAsString = stringBuilder.toString();
 
-        // Разбор JSON и запись в объекты (десериализация)
-        Model model = new Model();
+        /*
+        Разбор JSON и запись в объекты (десериализация).
+        Повторяющийся код для станций отправления и прибытия
+        вынесен в метод parseArrayOfCities().
+        */
         try {
             JSONObject root = new JSONObject(jsonFileAsString);
-            model.setCitiesFrom(parseJSONArray(root.getJSONArray("citiesFrom")));
-            model.setCitiesTo(parseJSONArray(root.getJSONArray("citiesTo")));
+            mModel.setCitiesFrom(parseArrayOfCities(root.getJSONArray("citiesFrom")));
+            mModel.setCitiesTo(parseArrayOfCities(root.getJSONArray("citiesTo")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return model;
+        return mModel;
     }
 
 
 
     @Override
     protected void onPostExecute(Model model) {
-        super.onPostExecute(model);
-
-        List<Station> stationsFrom = new ArrayList<>();
-        List<Station> stationsTo = new ArrayList<>();
-
-        City city;
-
-        for (int i = 0; i < model.getCitiesFrom().size(); i++) {
-            city = model.getCityFrom(i);
-            for (int j = 0; j < city.getStations().size(); j++) {
-                stationsFrom.add(city.getStation(j));
-            }
-        }
-
-        for (int i = 0; i < model.getCitiesTo().size(); i++) {
-            city = model.getCityTo(i);
-            for (int j = 0; j < city.getStations().size(); j++) {
-                stationsTo.add(city.getStation(j));
-            }
-        }
-
-        mFromAdapter.updateDataset(stationsFrom);
-        mFromAdapter.notifyDataSetChanged();
-
-        mToAdapter.updateDataset(stationsTo);
-        mToAdapter.notifyDataSetChanged();
+        mModel = model;
     }
 
-    private List<City> parseJSONArray(JSONArray citiesJSONArray) throws JSONException {
+    private List<City> parseArrayOfCities(JSONArray citiesJSONArray) throws JSONException {
 
         List<City> cities = new ArrayList<>();
         List<Station> stations = new ArrayList<>();

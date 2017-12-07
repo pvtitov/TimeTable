@@ -2,10 +2,7 @@ package pvtitov.timetable;
 
 import android.app.Application;
 
-import java.util.ArrayList;
-
-
-import pvtitov.timetable.model.Station;
+import pvtitov.timetable.model.Model;
 
 /**
  * Created by Павел on 30.10.2017.
@@ -19,11 +16,8 @@ public class App extends Application{
         return singleton;
     }
 
-    private StationsAdapter<Station> mFromAdapter;
-    private StationsAdapter<Station> mToAdapter;
+    private Model mModel;
 
-    public StationsAdapter<Station> getFromAdapter() {return mFromAdapter;}
-    public StationsAdapter<Station> getToAdapter() {return mToAdapter;}
 
     @Override
     public void onCreate() {
@@ -31,9 +25,11 @@ public class App extends Application{
         singleton = this;
 
 
-        mFromAdapter = new StationsAdapter<>(new ArrayList<Station>());
-        mToAdapter = new StationsAdapter<>(new ArrayList<Station>());
-        ParseJson mParseJson = new ParseJson(this, mFromAdapter, mToAdapter);
-        mParseJson.execute();
+        mModel = new Model();
+        ParseJson parseJson = new ParseJson(this, mModel);
+        parseJson.execute();
     }
+
+
+    public Model getModel() {return mModel;}
 }
