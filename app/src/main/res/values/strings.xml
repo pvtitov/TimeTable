@@ -1,6 +1,12 @@
+<!DOCTYPE resources [
+    <!ENTITY appname "Timetable">
+    <!ENTITY copyright "©Павел Титов, 2017">
+    ]>
+
 <resources>
-    <string name="app_name">Timetable</string>
+    <string name="app_name">&appname;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="search_hint">Поиск станций</string>
+    <string name="app_info">&appname; %1$s\n&copyright;</string>
 </resources>
