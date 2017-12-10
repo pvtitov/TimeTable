@@ -23,12 +23,13 @@ import pvtitov.timetable.model.Station;
  * Created by Павел on 12.11.2017.
  */
 
-public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<Station>{
+public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<Station>, ParseJson.OnParseListener{
 
     String mRequestedToOrFrom;
     StationsAdapter<Station> mAdapter = new StationsAdapter<>();
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView mRecyclerView;
+    List<City> mCities = new ArrayList<>();
 
 
     @Override
@@ -55,21 +56,10 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
             mRequestedToOrFrom = intent.getStringExtra(MainActivity.EXTRA_CHOOSE_ADAPTER);
         }
 
+        setupAdapter(mRequestedToOrFrom);
 
-        final List<City> cities = new ArrayList<>();
-
-        switch (mRequestedToOrFrom){
-            case MainActivity.ADAPTER_FROM:
-                if (App.getInstance().getModel().getCitiesFrom() != null)
-                    cities.addAll(App.getInstance().getModel().getCitiesFrom());
-                break;
-            case MainActivity.ADAPTER_TO:
-                if (App.getInstance().getModel().getCitiesTo() != null)
-                    cities.addAll(App.getInstance().getModel().getCitiesTo());
-                break;
-        }
-
-        setupAdapter(cities);
+        // Зарегистрировать данную активность на событие: завершение работы парсера
+        ParseJson.setOnParseListener(this);
 
         final EditText searchEditText = findViewById(R.id.search_edit_text);
         ImageButton searchButton = findViewById(R.id.search_button);
@@ -77,15 +67,25 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
             @Override
             public void onClick(View view) {
                 String query = searchEditText.getText().toString();
-                searchByQuery(cities, query);
+                searchByQuery(mCities, query);
             }
         });
     }
 
-    private void setupAdapter(List<City> cities) {
-        if (cities != null) {
+    private void setupAdapter(String requestedToOrFrom) {
+        switch (requestedToOrFrom){
+            case MainActivity.ADAPTER_FROM:
+                if (App.getInstance().getModel().getCitiesFrom() != null)
+                    mCities.addAll(App.getInstance().getModel().getCitiesFrom());
+                break;
+            case MainActivity.ADAPTER_TO:
+                if (App.getInstance().getModel().getCitiesTo() != null)
+                    mCities.addAll(App.getInstance().getModel().getCitiesTo());
+                break;
+        }
 
-            for (City city: cities) {
+        if (mCities != null) {
+            for (City city: mCities) {
                 mAdapter.addItems(city.getStations());
                 mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
             }
@@ -124,5 +124,26 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         intent.putExtra(MainActivity.EXTRA_TO_OR_FROM, mRequestedToOrFrom);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onLongClick(Station stationItem) {
+
+        // Формирование строки с детальной информацией о станции
+        String details = stationItem.getStation()+ "\n\n" +
+                stationItem.getCity();
+        if (!stationItem.getRegion().equals(""))
+            details = details + "\n\n" + stationItem.getRegion();
+        details = details + "\n\n" + stationItem.getCountry();
+
+
+        StationDetailsFragment stationDetailsFragment = new StationDetailsFragment();
+        stationDetailsFragment.setDetails(details);
+        stationDetailsFragment.show(getSupportFragmentManager(), "stations_details");
+    }
+
+    @Override
+    public void onParseComplete() {
+        setupAdapter(mRequestedToOrFrom);
     }
 }

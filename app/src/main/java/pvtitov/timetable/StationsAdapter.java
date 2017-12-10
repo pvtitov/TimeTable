@@ -17,6 +17,7 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
 
     interface OnItemClickListener<Item>{
         void onClick(Item item);
+        void onLongClick(Item item);
     }
 
     public interface ItemsGroupedByHeader{
@@ -106,6 +107,15 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
             public void onClick(View view) {
                 if (mItems != null)
                     mListener.onClick(mItems.get(holder.getAdapterPosition()));
+            }
+        });
+
+        holder.mItemTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mItems != null)
+                    mListener.onLongClick(mItems.get(holder.getAdapterPosition()));
+                return false;
             }
         });
     }

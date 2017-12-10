@@ -19,14 +19,23 @@ import pvtitov.timetable.model.Station;
 
 class ParseJson extends AsyncTask<Void, Void, Model> {
 
+    private static OnParseListener mListener;
+
     private Context mContext;
     private Model mModel;
-    private StationsAdapter<Station> mAdapter;
 
     ParseJson(Context context,
               Model model) {
         mContext = context;
         mModel = model;
+    }
+
+    interface OnParseListener{
+        void onParseComplete();
+    }
+
+    static void setOnParseListener(OnParseListener listener) {
+        mListener = listener;
     }
 
 
@@ -56,6 +65,7 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return mModel;
     }
 
@@ -64,6 +74,7 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
     @Override
     protected void onPostExecute(Model model) {
         mModel = model;
+        mListener.onParseComplete();
     }
 
 
