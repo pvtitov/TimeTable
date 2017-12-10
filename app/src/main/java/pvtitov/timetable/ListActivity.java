@@ -4,12 +4,10 @@ package pvtitov.timetable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pvtitov.timetable.model.City;
-import pvtitov.timetable.model.Model;
 import pvtitov.timetable.model.Station;
 
 
@@ -28,12 +25,10 @@ import pvtitov.timetable.model.Station;
 
 public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<Station>{
 
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManager;
     String mRequestedToOrFrom;
-    StationsAdapter<Station> mAdapter;
-    List<City> mCities;
-    List<Station> mStations = new ArrayList<>();
+    StationsAdapter<Station> mAdapter = new StationsAdapter<>();
+    RecyclerView.LayoutManager mLayoutManager;
+    RecyclerView mRecyclerView;
 
 
     @Override
@@ -44,87 +39,81 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
         /*
         Получаем ссылку на RecyclerView
          */
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_list_view);
+        mRecyclerView = findViewById(R.id.recycler_list_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new StationsAdapter<>();
         mRecyclerView.setAdapter(mAdapter);
-        if (mAdapter != null) mAdapter.setOnItemClickListener(ListActivity.this);
+        mAdapter.setOnItemClickListener(ListActivity.this);
 
         /*
-        Получаем из вызвавшего интента информацию о том, какой список подгрузить
+        Получаем из интента, вызвавшего данную активность,
+        информацию о том, какой список подгрузить.
+        И, в зависимости от
          */
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             mRequestedToOrFrom = intent.getStringExtra(MainActivity.EXTRA_CHOOSE_ADAPTER);
         }
 
-        Model dataStorage = App.getInstance().getModel();
+
+        final List<City> cities = new ArrayList<>();
+
         switch (mRequestedToOrFrom){
             case MainActivity.ADAPTER_FROM:
-                mCities = dataStorage.getCitiesFrom();
-                setupAdapter(mCities);
+                if (App.getInstance().getModel().getCitiesFrom() != null)
+                    cities.addAll(App.getInstance().getModel().getCitiesFrom());
                 break;
             case MainActivity.ADAPTER_TO:
-                mCities = dataStorage.getCitiesTo();
-                setupAdapter(mCities);
+                if (App.getInstance().getModel().getCitiesTo() != null)
+                    cities.addAll(App.getInstance().getModel().getCitiesTo());
                 break;
         }
 
-        final EditText searchEditText = (EditText) findViewById(R.id.search_edit_text);
-        ImageButton searchButton = (ImageButton) findViewById(R.id.search_button);
+        setupAdapter(cities);
+
+        final EditText searchEditText = findViewById(R.id.search_edit_text);
+        ImageButton searchButton = findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String query = searchEditText.getText().toString();
-
-                searchByQuery(mStations, query);
+                searchByQuery(cities, query);
             }
         });
     }
 
     private void setupAdapter(List<City> cities) {
         if (cities != null) {
-            for (int i = 0; i < cities.size(); i++) {
-                List<Station> stationsAdded = cities.get(i).getStations();
-                mStations.addAll(stationsAdded);
+
+            for (City city: cities) {
+                mAdapter.addItems(city.getStations());
+                mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
             }
-            mAdapter.updateDataset(mStations);
-            mAdapter.notifyDataSetChanged();
         }
     }
 
-    private void searchByQuery(final List<Station> oldList, final String query) {
+    private void searchByQuery(final List<City> cities, final String query) {
 
-        final Handler handler = new Handler();
-
-        final List<Station> newList = new ArrayList<>();
-        mAdapter.updateDataset(newList);
+        //  Обновляем список
+        mAdapter.updateDataset(new ArrayList<Station>());
         mAdapter.notifyDataSetChanged();
 
-        Thread backgroundThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
+        if (cities != null) {
 
-                for (final Station station: oldList) {
+            for (City city: cities) {
+                for (final Station station: city.getStations()) {
+                    // Здесь происходит фильтрация станций по поисковому запросу
                     if (station.getStation().toLowerCase()
                             .contains(query.toLowerCase())) {
 
-                        newList.add(station);
-
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mAdapter.addItem(station);
-                                mAdapter.notifyItemChanged(newList.size() - 1);
-                            }
-                        });
+                        mAdapter.addItem(station);
+                        mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
                     }
                 }
             }
-        });
 
-        backgroundThread.start();
+            mRecyclerView.scrollToPosition(0);
+        }
     }
 
 

@@ -66,15 +66,18 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
         mModel = model;
     }
 
+
+
     private List<City> parseArrayOfCities(JSONArray citiesJSONArray) throws JSONException {
 
         List<City> cities = new ArrayList<>();
-        List<Station> stations = new ArrayList<>();
+        List<Station> stations;
+        City city;
 
         for (int i = 0; i < citiesJSONArray.length(); i++){
             JSONObject cityJSONObject = citiesJSONArray.getJSONObject(i);
 
-            City city = new City();
+            city = new City();
             city.setCountry(cityJSONObject.getString("countryTitle"));
             city.setDistrict(cityJSONObject.getString("districtTitle"));
             city.setCityId(cityJSONObject.getInt("cityId"));
@@ -90,6 +93,7 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
 
 
             JSONArray stationsJSONArray = cityJSONObject.getJSONArray("stations");
+            stations = new ArrayList<>();
 
             for (int j = 0; j < stationsJSONArray.length(); j++) {
                 JSONObject stationJSONObject = stationsJSONArray.getJSONObject(j);

@@ -59,11 +59,14 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
         mItems.add(item);
     }
 
+    void addItems(List<Item> items){
+        mItems.addAll(items);
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
-        //TODO change View parameters here
         return new ViewHolder(view);
     }
 
