@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:keyboardNavigationCluster="true"
-            android:selectAllOnFocus="true" />
+            android:selectAllOnFocus="true"
+            android:hint="Поиск по станциям"/>
 
         <ImageButton
             android:id="@+id/search_button"
@@ -24,8 +24,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:clickable="true"
+            android:focusable="true"
             android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/ic_menu_search" />
+            app:srcCompat="@android:drawable/ic_menu_search"
+            />
 
     </FrameLayout>
 

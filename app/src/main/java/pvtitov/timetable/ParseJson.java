@@ -74,7 +74,7 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
     @Override
     protected void onPostExecute(Model model) {
         mModel = model;
-        mListener.onParseComplete();
+        if (mListener != null) mListener.onParseComplete();
     }
 
 

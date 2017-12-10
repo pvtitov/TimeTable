@@ -9,29 +9,29 @@
         android:id="@+id/country"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textAllCaps="true"
         android:gravity="center"
         android:hint="country"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
         />
 
     <TextView
         android:id="@+id/city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
+        android:textSize="18sp"
         android:hint="city"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="6dp"
         />
 
     <TextView
         android:id="@+id/station"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp"
         android:hint="station"
-        android:layout_marginTop="10dp"
         />
 
 </LinearLayout>

@@ -20,6 +20,7 @@
             android:textSize="18sp"
             android:textColor="@android:color/black"
             android:text="Пункт отправления"
+            android:hint="Пункт отправления"
             />
 
         <Button
@@ -30,6 +31,7 @@
             android:textSize="18sp"
             android:textColor="@android:color/black"
             android:text="Пункт назначения"
+            android:hint="Пункт назначения"
             />
 
         <Button
@@ -40,6 +42,7 @@
             android:textSize="18sp"
             android:textColor="@android:color/black"
             android:text="Дата"
+            android:hint="Дата"
             />
 
 </LinearLayout>
