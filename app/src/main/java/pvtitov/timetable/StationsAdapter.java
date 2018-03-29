@@ -10,58 +10,49 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import pvtitov.timetable.model.Station;
 
-public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
-    private List<Item> mItems = new ArrayList<>();
-    private OnItemClickListener<Item> mListener;
 
-    interface OnItemClickListener<Item>{
-        void onClick(Item item);
-        void onLongClick(Item item);
-    }
+public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
+    private List<Station> mStations = new ArrayList<>();
+    private OnStationClickListener mListener;
 
-    public interface ItemsGroupedByHeader{
-        String getSmallHeader();
-        String getBigHeader();
-        String getItem();
+    interface OnStationClickListener{
+        void onClick(Station station);
+        void onLongClick(Station station);
     }
 
     StationsAdapter(){}
 
-    StationsAdapter(List<Item> items){
-        mItems = items;
-    }
-
-    List<Item> getDataList(){return mItems;}
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mHeaderBig;
-        TextView mHeaderSmall;
-        TextView mItemTextView;
+        TextView mCountryTextView;
+        TextView mCityTextView;
+        TextView mStationTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            mHeaderSmall = itemView.findViewById(R.id.city);
-            mHeaderBig = itemView.findViewById(R.id.country);
-            mItemTextView = itemView.findViewById(R.id.station);
+            mCityTextView = itemView.findViewById(R.id.city);
+            mCountryTextView = itemView.findViewById(R.id.country);
+            mStationTextView = itemView.findViewById(R.id.station);
         }
 
     }
 
-    void setOnItemClickListener(OnItemClickListener<Item> listener){
+    void setOnItemClickListener(OnStationClickListener listener){
         mListener = listener;
     }
 
-    void updateDataset(List<Item> items) {
-        mItems = items;
+    void updateDataset(List<Station> stations) {
+        mStations = stations;
     }
 
-    void addItem(Item item){
-        mItems.add(item);
+    void addStation(Station station){
+        mStations.add(station);
     }
 
-    void addItems(List<Item> items){
-        mItems.addAll(items);
+    void addStations(List<Station> stations){
+        mStations.addAll(stations);
     }
 
 
@@ -74,47 +65,48 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        try{
-            ItemsGroupedByHeader item = (ItemsGroupedByHeader) mItems.get(position);
-            holder.mHeaderBig.setText(item.getBigHeader());
-            holder.mHeaderSmall.setText(item.getSmallHeader());
-            holder.mItemTextView.setText(item.getItem());
-            /*
-            Здесь происходит группирование городов по странам
-            */
-            holder.mHeaderBig.setVisibility(View.GONE);
-            holder.mHeaderSmall.setVisibility(View.GONE);
-            if (position == 0) {
-                holder.mHeaderBig.setVisibility(View.VISIBLE);
-                holder.mHeaderSmall.setVisibility(View.VISIBLE);
-            }
-            if (position > 0) {
-                ItemsGroupedByHeader previousItem = (ItemsGroupedByHeader) mItems.get(position - 1);
-                if (!(item.getBigHeader().equals(previousItem.getBigHeader()))){
-                    holder.mHeaderBig.setVisibility(View.VISIBLE);
-                }
-                if (!(item.getSmallHeader().equals(previousItem.getSmallHeader()))){
-                    holder.mHeaderSmall.setVisibility(View.VISIBLE);
-                }
-            }
-        } catch (ClassCastException e) {
-            throw new ClassCastException();
+        Station station = mStations.get(position);
+        String country = station.getCountry();
+        String city = station.getCity();
+
+        holder.mCountryTextView.setText(country);
+        holder.mCityTextView.setText(city);
+        holder.mStationTextView.setText(station.getStation());
+
+        // Здесь происходит группирование городов по странам
+
+        if (position > 0) {
+            Station prevStation = mStations.get(position - 1);
+            String prevCountry = prevStation.getCountry();
+            String prevCity = prevStation.getCity();
+
+            int countryVisibility;
+            int cityVisibility;
+
+            if (country.equals(prevCountry)) countryVisibility = View.GONE;
+            else countryVisibility = View.VISIBLE;
+
+            if (city.equals(prevCity)) cityVisibility = View.GONE;
+            else cityVisibility = View.VISIBLE;
+
+            holder.mCountryTextView.setVisibility(countryVisibility);
+            holder.mCityTextView.setVisibility(cityVisibility);
         }
 
 
-        holder.mItemTextView.setOnClickListener(new View.OnClickListener() {
+        holder.mStationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mItems != null)
-                    mListener.onClick(mItems.get(holder.getAdapterPosition()));
+                if (mStations != null)
+                    mListener.onClick(mStations.get(holder.getAdapterPosition()));
             }
         });
 
-        holder.mItemTextView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.mStationTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (mItems != null)
-                    mListener.onLongClick(mItems.get(holder.getAdapterPosition()));
+                if (mStations != null)
+                    mListener.onLongClick(mStations.get(holder.getAdapterPosition()));
                 return false;
             }
         });
@@ -122,6 +114,6 @@ public class StationsAdapter<Item> extends Adapter<StationsAdapter.ViewHolder>{
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mStations.size();
     }
 }

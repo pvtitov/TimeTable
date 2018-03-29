@@ -23,10 +23,10 @@ import pvtitov.timetable.model.Station;
  * Created by Павел on 12.11.2017.
  */
 
-public class ListActivity extends AppCompatActivity implements StationsAdapter.OnItemClickListener<Station>, ParseJson.OnParseListener{
+public class ListActivity extends AppCompatActivity implements StationsAdapter.OnStationClickListener, ParseJson.OnParseListener{
 
     String mRequestedToOrFrom;
-    StationsAdapter<Station> mAdapter = new StationsAdapter<>();
+    StationsAdapter mAdapter = new StationsAdapter();
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView mRecyclerView;
     List<City> mCities = new ArrayList<>();
@@ -86,7 +86,7 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
 
         if (mCities != null) {
             for (City city: mCities) {
-                mAdapter.addItems(city.getStations());
+                mAdapter.addStations(city.getStations());
                 mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
             }
         }
@@ -106,7 +106,7 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
                     if (station.getStation().toLowerCase()
                             .contains(query.toLowerCase())) {
 
-                        mAdapter.addItem(station);
+                        mAdapter.addStation(station);
                         mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
                     }
                 }

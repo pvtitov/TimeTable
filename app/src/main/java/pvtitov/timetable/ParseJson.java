@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,14 +20,14 @@ import pvtitov.timetable.model.Station;
 
 class ParseJson extends AsyncTask<Void, Void, Model> {
 
-    private static OnParseListener mListener;
+    static private OnParseListener mListener;
 
-    private Context mContext;
+    private WeakReference<Context> mContextWeakReference;
     private Model mModel;
 
     ParseJson(Context context,
               Model model) {
-        mContext = context;
+        mContextWeakReference = new WeakReference<>(context);
         mModel = model;
     }
 
@@ -45,7 +46,7 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
         /*
         Чтение из файла. Преобразование всего файла в String.
         */
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.all_stations);
+        InputStream inputStream = mContextWeakReference.get().getResources().openRawResource(R.raw.all_stations);
         Scanner scanner = new Scanner(inputStream);
         StringBuilder stringBuilder = new StringBuilder();
         while (scanner.hasNextLine()) {
