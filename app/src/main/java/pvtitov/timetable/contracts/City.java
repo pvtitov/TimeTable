@@ -1,9 +1,7 @@
-package pvtitov.timetable.model;
+package pvtitov.timetable.contracts;
 
 
 import java.util.List;
-
-import pvtitov.timetable.StationsAdapter;
 
 /**
  * Created by Павел on 21.10.2017.

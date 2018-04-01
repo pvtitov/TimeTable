@@ -1,4 +1,4 @@
-package pvtitov.timetable;
+package pvtitov.timetable.put_aside;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -24,5 +24,5 @@ public class StationDetailsFragment extends DialogFragment {
     }
 
 
-    void setDetails(String stationDetails) {mStationDetails = stationDetails;}
+    public void setDetails(String stationDetails) {mStationDetails = stationDetails;}
 }

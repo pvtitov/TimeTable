@@ -1,4 +1,4 @@
-package pvtitov.timetable;
+package pvtitov.timetable.put_aside;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -10,19 +10,20 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import pvtitov.timetable.model.Station;
+import pvtitov.timetable.R;
+import pvtitov.timetable.contracts.Station;
 
 
 public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
     private List<Station> mStations = new ArrayList<>();
     private OnStationClickListener mListener;
 
-    interface OnStationClickListener{
+    public interface OnStationClickListener{
         void onClick(Station station);
         void onLongClick(Station station);
     }
 
-    StationsAdapter(){}
+    public StationsAdapter(){}
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,19 +40,19 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
 
     }
 
-    void setOnItemClickListener(OnStationClickListener listener){
+    public void setOnItemClickListener(OnStationClickListener listener){
         mListener = listener;
     }
 
-    void updateDataset(List<Station> stations) {
+    public void updateDataset(List<Station> stations) {
         mStations = stations;
     }
 
-    void addStation(Station station){
+    public void addStation(Station station){
         mStations.add(station);
     }
 
-    void addStations(List<Station> stations){
+    public void addStations(List<Station> stations){
         mStations.addAll(stations);
     }
 
@@ -94,21 +95,15 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
         }
 
 
-        holder.mStationTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mStations != null)
-                    mListener.onClick(mStations.get(holder.getAdapterPosition()));
-            }
+        holder.mStationTextView.setOnClickListener(view -> {
+            if (mStations != null)
+                mListener.onClick(mStations.get(holder.getAdapterPosition()));
         });
 
-        holder.mStationTextView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mStations != null)
-                    mListener.onLongClick(mStations.get(holder.getAdapterPosition()));
-                return false;
-            }
+        holder.mStationTextView.setOnLongClickListener(v -> {
+            if (mStations != null)
+                mListener.onLongClick(mStations.get(holder.getAdapterPosition()));
+            return false;
         });
     }
 

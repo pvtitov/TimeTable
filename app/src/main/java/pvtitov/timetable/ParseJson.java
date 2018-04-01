@@ -1,7 +1,8 @@
 package pvtitov.timetable;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,80 +14,80 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import pvtitov.timetable.model.City;
-import pvtitov.timetable.model.Model;
-import pvtitov.timetable.model.Point;
-import pvtitov.timetable.model.Station;
+import pvtitov.timetable.contracts.City;
+import pvtitov.timetable.contracts.Point;
+import pvtitov.timetable.contracts.Station;
 
-class ParseJson extends AsyncTask<Void, Void, Model> {
+public class ParseJson extends AsyncTaskLoader<List<City>>{
 
-    static private OnParseListener mListener;
+    public static final String BUNDLE_KEY = "loader_arg_key";
 
     private WeakReference<Context> mContextWeakReference;
-    private Model mModel;
+    private String mToOrFrom;
 
-    ParseJson(Context context,
-              Model model) {
+    ParseJson(Context context, PickCities toOrFrom) {
+        super(context);
         mContextWeakReference = new WeakReference<>(context);
-        mModel = model;
+        mToOrFrom = toOrFrom.getValue();
     }
-
-    interface OnParseListener{
-        void onParseComplete();
-    }
-
-    static void setOnParseListener(OnParseListener listener) {
-        mListener = listener;
-    }
-
 
     @Override
-    protected Model doInBackground(Void... voids) {
+    public List<City> loadInBackground() {
+        Log.d("debugging", "loadInBackground()");
+        return parseCities();
+    }
 
-        /*
-        Чтение из файла. Преобразование всего файла в String.
-        */
-        InputStream inputStream = mContextWeakReference.get().getResources().openRawResource(R.raw.all_stations);
+    public enum PickCities{
+        TO("citiesTo"), FROM("citiesFrom");
+
+        public String value;
+
+        PickCities(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+
+
+
+    private List<City> parseCities() {
+        try {
+            JSONObject root = new JSONObject(
+                    readFromFile(mContextWeakReference.get(), R.raw.all_stations)
+            );
+            return parseStations(root.getJSONArray(mToOrFrom));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String readFromFile(Context context, int resource_id) {
+        Log.d("debugging", "readFromFile() starts");
+        InputStream inputStream = context.getResources().openRawResource(resource_id);
         Scanner scanner = new Scanner(inputStream);
         StringBuilder stringBuilder = new StringBuilder();
         while (scanner.hasNextLine()) {
             stringBuilder.append(scanner.nextLine());
         }
-        String jsonFileAsString = stringBuilder.toString();
-
-        /*
-        Разбор JSON и запись в объекты (десериализация).
-        Повторяющийся код для станций отправления и прибытия
-        вынесен в метод parseArrayOfCities().
-        */
-        try {
-            JSONObject root = new JSONObject(jsonFileAsString);
-            mModel.setCitiesFrom(parseArrayOfCities(root.getJSONArray("citiesFrom")));
-            mModel.setCitiesTo(parseArrayOfCities(root.getJSONArray("citiesTo")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return mModel;
+        Log.d("debugging", "readFromFile() finishes");
+        return stringBuilder.toString();
     }
 
 
-
-    @Override
-    protected void onPostExecute(Model model) {
-        mModel = model;
-        if (mListener != null) mListener.onParseComplete();
-    }
-
-
-
-    private List<City> parseArrayOfCities(JSONArray citiesJSONArray) throws JSONException {
+    private List<City> parseStations(JSONArray citiesJSONArray) throws JSONException {
 
         List<City> cities = new ArrayList<>();
         List<Station> stations;
         City city;
 
         for (int i = 0; i < citiesJSONArray.length(); i++){
+            Log.d("debugging", "parseStations(), city " + i);
             JSONObject cityJSONObject = citiesJSONArray.getJSONObject(i);
 
             city = new City();
@@ -108,6 +109,7 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
             stations = new ArrayList<>();
 
             for (int j = 0; j < stationsJSONArray.length(); j++) {
+                Log.d("debugging", "parseStations(), city " + i + ", station " + j);
                 JSONObject stationJSONObject = stationsJSONArray.getJSONObject(j);
 
                 Station station = new Station();
@@ -130,7 +132,6 @@ class ParseJson extends AsyncTask<Void, Void, Model> {
             city.setStations(stations);
             cities.add(city);
         }
-
 
         return cities;
     }

@@ -1,4 +1,4 @@
-package pvtitov.timetable.model;
+package pvtitov.timetable.contracts;
 
 /**
  * Created by Павел on 21.10.2017.

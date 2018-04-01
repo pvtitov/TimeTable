@@ -1,8 +1,11 @@
-package pvtitov.timetable;
+package pvtitov.timetable.put_aside;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import pvtitov.timetable.BuildConfig;
+import pvtitov.timetable.R;
 
 public class InfoActivity extends AppCompatActivity {
 

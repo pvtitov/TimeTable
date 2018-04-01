@@ -1,4 +1,4 @@
-package pvtitov.timetable;
+package pvtitov.timetable.put_aside;
 
 
 
@@ -10,7 +10,7 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 
-import pvtitov.timetable.model.Date;
+import pvtitov.timetable.contracts.Date;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
