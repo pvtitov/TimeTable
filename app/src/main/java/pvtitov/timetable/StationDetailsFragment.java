@@ -1,4 +1,4 @@
-package pvtitov.timetable.put_aside;
+package pvtitov.timetable;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

@@ -21,9 +21,6 @@ import java.util.Objects;
 
 import pvtitov.timetable.contracts.City;
 import pvtitov.timetable.contracts.Station;
-import pvtitov.timetable.put_aside.MainActivity;
-import pvtitov.timetable.put_aside.StationDetailsFragment;
-import pvtitov.timetable.put_aside.StationsAdapter;
 
 
 /**
@@ -137,18 +134,17 @@ public class ListActivity extends AppCompatActivity implements StationsAdapter.O
 
     @Override
     public void onLoadFinished(Loader<List<City>> loader, List<City> data) {
+        Log.d("debugging", "onLoaderFinished(): " + data.toString());
         mCities = data;
 
-        if (mCities != null) {
-            for (City city: mCities) {
-                mAdapter.addStations(city.getStations());
-                mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
-            }
+        for (City city: mCities) {
+            mAdapter.addStations(city.getStations());
+            mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
         }
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        Log.d("debugging", "onLoaderReset(): loader " + loader.getId());
     }
 }

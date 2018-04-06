@@ -1,4 +1,4 @@
-package pvtitov.timetable.put_aside;
+package pvtitov.timetable;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,9 +15,6 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 
-import pvtitov.timetable.ListActivity;
-import pvtitov.timetable.ParseJson;
-import pvtitov.timetable.R;
 import pvtitov.timetable.contracts.Date;
 
 

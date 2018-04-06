@@ -1,4 +1,4 @@
-package pvtitov.timetable.put_aside;
+package pvtitov.timetable;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import pvtitov.timetable.R;
 import pvtitov.timetable.contracts.Station;
 
 
@@ -74,35 +73,30 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
         holder.mCityTextView.setText(city);
         holder.mStationTextView.setText(station.getStation());
 
-        // Здесь происходит группирование городов по странам
+        int countryVisibility = View.VISIBLE;
+        int cityVisibility = View.VISIBLE;
 
         if (position > 0) {
             Station prevStation = mStations.get(position - 1);
             String prevCountry = prevStation.getCountry();
             String prevCity = prevStation.getCity();
 
-            int countryVisibility;
-            int cityVisibility;
-
             if (country.equals(prevCountry)) countryVisibility = View.GONE;
-            else countryVisibility = View.VISIBLE;
-
             if (city.equals(prevCity)) cityVisibility = View.GONE;
-            else cityVisibility = View.VISIBLE;
-
-            holder.mCountryTextView.setVisibility(countryVisibility);
-            holder.mCityTextView.setVisibility(cityVisibility);
         }
+
+        holder.mCountryTextView.setVisibility(countryVisibility);
+        holder.mCityTextView.setVisibility(cityVisibility);
 
 
         holder.mStationTextView.setOnClickListener(view -> {
             if (mStations != null)
-                mListener.onClick(mStations.get(holder.getAdapterPosition()));
+                mListener.onClick(mStations.get(position));
         });
 
         holder.mStationTextView.setOnLongClickListener(v -> {
             if (mStations != null)
-                mListener.onLongClick(mStations.get(holder.getAdapterPosition()));
+                mListener.onLongClick(mStations.get(position));
             return false;
         });
     }

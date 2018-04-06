@@ -2,7 +2,6 @@ package pvtitov.timetable;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,8 +32,13 @@ public class ParseJson extends AsyncTaskLoader<List<City>>{
 
     @Override
     public List<City> loadInBackground() {
-        Log.d("debugging", "loadInBackground()");
         return parseCities();
+    }
+
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
     }
 
     public enum PickCities{
@@ -68,14 +72,12 @@ public class ParseJson extends AsyncTaskLoader<List<City>>{
     }
 
     private String readFromFile(Context context, int resource_id) {
-        Log.d("debugging", "readFromFile() starts");
         InputStream inputStream = context.getResources().openRawResource(resource_id);
         Scanner scanner = new Scanner(inputStream);
         StringBuilder stringBuilder = new StringBuilder();
         while (scanner.hasNextLine()) {
             stringBuilder.append(scanner.nextLine());
         }
-        Log.d("debugging", "readFromFile() finishes");
         return stringBuilder.toString();
     }
 
@@ -87,7 +89,6 @@ public class ParseJson extends AsyncTaskLoader<List<City>>{
         City city;
 
         for (int i = 0; i < citiesJSONArray.length(); i++){
-            Log.d("debugging", "parseStations(), city " + i);
             JSONObject cityJSONObject = citiesJSONArray.getJSONObject(i);
 
             city = new City();
@@ -109,7 +110,6 @@ public class ParseJson extends AsyncTaskLoader<List<City>>{
             stations = new ArrayList<>();
 
             for (int j = 0; j < stationsJSONArray.length(); j++) {
-                Log.d("debugging", "parseStations(), city " + i + ", station " + j);
                 JSONObject stationJSONObject = stationsJSONArray.getJSONObject(j);
 
                 Station station = new Station();

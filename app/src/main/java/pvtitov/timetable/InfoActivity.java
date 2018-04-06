@@ -1,4 +1,4 @@
-package pvtitov.timetable.put_aside;
+package pvtitov.timetable;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
