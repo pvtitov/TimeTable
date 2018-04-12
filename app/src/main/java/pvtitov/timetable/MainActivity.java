@@ -1,7 +1,9 @@
 package pvtitov.timetable;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,21 +24,15 @@ import pvtitov.timetable.contracts.Date;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DatePickerFragment.DateConsumer {
 
-    private static final String STATE_YEAR = "year";
-    private static final String STATE_MONTH = "month";
-    private static final String STATE_DAY = "day";
-    private static final String STATE_IS_PICKED = "picked";
+    private static final String YEAR = "year";
+    private static final String MONTH = "month";
+    private static final String DAY = "day";
+    private static final String DATE_IS_PICKED = "picked";
 
-    private static final String STATE_STATION_FROM = "station_from";
-    private static final String STATE_STATION_TO = "station_to";
+    public static final String FROM = "from";
+    public static final String TO = "to";
 
-    public static final String EXTRA_CHOOSE_ADAPTER = "choose_adapter";
-    public static final String ADAPTER_FROM = "from";
-    public static final String ADAPTER_TO = "to";
-
-    public static final int REQUEST_CODE_STATION = 123;
-    public static final String EXTRA_PASS_STATION = "pass_station";
-    public static final String EXTRA_TO_OR_FROM = "to_or_from";
+    public static final int PICK_STATION_CODE = 1;
 
 
     private Date mDate;
@@ -70,16 +66,16 @@ public class MainActivity extends AppCompatActivity
         mButtonFrom = findViewById(R.id.button_from);
         mButtonFrom.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, ListActivity.class);
-            intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_FROM);
-            startActivityForResult(intent, REQUEST_CODE_STATION);
+            intent.putExtra(FROM, true);
+            startActivityForResult(intent, PICK_STATION_CODE);
         });
 
 
         mButtonTo = findViewById(R.id.button_to);
         mButtonTo.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, ListActivity.class);
-            intent.putExtra(EXTRA_CHOOSE_ADAPTER, ADAPTER_TO);
-            startActivityForResult(intent, REQUEST_CODE_STATION);
+            intent.putExtra(TO, true);
+            startActivityForResult(intent, PICK_STATION_CODE);
         });
 
 
@@ -89,6 +85,7 @@ public class MainActivity extends AppCompatActivity
             pickDateDialog.show(getSupportFragmentManager(), "date_picker");
         });
     }
+
 
     @Override
     protected void onResume() {
@@ -100,18 +97,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_STATION) {
+        if (requestCode == PICK_STATION_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                switch (data.getStringExtra(EXTRA_TO_OR_FROM)) {
-                    case ADAPTER_FROM:
-                        mStationFrom = data.getStringExtra(EXTRA_PASS_STATION);
-                        mButtonFrom.setText(mStationFrom);
-                        break;
-                    case ADAPTER_TO:
-                        mStationTo = data.getStringExtra(EXTRA_PASS_STATION);
-                        mButtonTo.setText(mStationTo);
-                        break;
-                }
+
+                if (data.getBooleanExtra(FROM, false))
+                    mButtonFrom.setText(mStationFrom);
+
+                if (data.getBooleanExtra(TO, false))
+                    mButtonTo.setText(mStationTo);
+
             }
         }
     }
@@ -159,14 +153,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (mDateIsPicked) {
-            outState.putInt(STATE_YEAR, mDate.getYear());
-            outState.putInt(STATE_MONTH, mDate.getMonth());
-            outState.putInt(STATE_DAY, mDate.getDay());
-            outState.putBoolean(STATE_IS_PICKED, mDateIsPicked);
+            outState.putInt(YEAR, mDate.getYear());
+            outState.putInt(MONTH, mDate.getMonth());
+            outState.putInt(DAY, mDate.getDay());
+            outState.putBoolean(DATE_IS_PICKED, mDateIsPicked);
         }
 
-        outState.putString(STATE_STATION_FROM, mStationFrom);
-        outState.putString(STATE_STATION_TO, mStationTo);
+        outState.putString(FROM, mStationFrom);
+        outState.putString(TO, mStationTo);
 
         super.onSaveInstanceState(outState);
     }
@@ -175,17 +169,17 @@ public class MainActivity extends AppCompatActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        if (savedInstanceState.getBoolean(STATE_IS_PICKED)) {
+        if (savedInstanceState.getBoolean(DATE_IS_PICKED)) {
             mDate = new Date();
-            mDate.setYear(savedInstanceState.getInt(STATE_YEAR));
-            mDate.setMonth(savedInstanceState.getInt(STATE_MONTH));
-            mDate.setDay(savedInstanceState.getInt(STATE_DAY));
-            mDateIsPicked = savedInstanceState.getBoolean(STATE_IS_PICKED);
+            mDate.setYear(savedInstanceState.getInt(YEAR));
+            mDate.setMonth(savedInstanceState.getInt(MONTH));
+            mDate.setDay(savedInstanceState.getInt(DAY));
+            mDateIsPicked = savedInstanceState.getBoolean(DATE_IS_PICKED);
 
             if (mButtonDate != null) mButtonDate.setText(mDate.getDay() + "." + mDate.getMonth() + "." + mDate.getYear());
         }
 
-        mStationFrom = savedInstanceState.getString(STATE_STATION_FROM);
-        mStationTo = savedInstanceState.getString(STATE_STATION_TO);
+        mStationFrom = savedInstanceState.getString(FROM);
+        mStationTo = savedInstanceState.getString(TO);
     }
 }

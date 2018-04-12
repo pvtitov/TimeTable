@@ -1,0 +1,335 @@
+public class UsersPresenter {
+
+    private UsersActivity view;
+    private final UsersModel model;
+
+    public UsersPresenter(UsersModel model) {
+        this.model = model;
+    }
+
+    public void attachView(UsersActivity usersActivity) {
+        view = usersActivity;
+    }
+
+    public void detachView() {
+        view = null;
+    }
+
+
+    public void viewIsReady() {
+        loadUsers();
+    }
+
+    public void loadUsers() {
+        model.loadUsers(new UsersModel.LoadUserCallback() {
+            @Override
+            public void onLoad(List<User> users) {
+                view.showUsers(users);
+            }
+        });
+    }
+
+    public void add() {
+        UserData userData = view.getUserData();
+        if (TextUtils.isEmpty(userData.getName()) || TextUtils.isEmpty(userData.getEmail())) {
+            view.showToast(R.string.empty_values);
+            return;
+        }
+
+        ContentValues cv = new ContentValues(2);
+        cv.put(UserTable.COLUMN.NAME, userData.getName());
+        cv.put(UserTable.COLUMN.EMAIL, userData.getEmail());
+        view.showProgress();
+        model.addUser(cv, new UsersModel.CompleteCallback() {
+            @Override
+            public void onComplete() {
+                view.hideProgress();
+                loadUsers();
+            }
+        });
+    }
+
+    public void clear() {
+        view.showProgress();
+        model.clearUsers(new UsersModel.CompleteCallback() {
+            @Override
+            public void onComplete() {
+                view.hideProgress();
+                loadUsers();
+            }
+        });
+    }
+
+}
+==============================================================================
+public class UsersActivity extends AppCompatActivity {
+
+    private UserAdapter userAdapter;
+
+    private EditText editTextName;
+    private EditText editTextEmail;
+    private ProgressDialog progressDialog;
+
+    private UsersPresenter presenter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_single);
+        init();
+    }
+
+    private void init() {
+
+        editTextName = (EditText) findViewById(R.id.name);
+        editTextEmail = (EditText) findViewById(R.id.email);
+
+        findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.add();
+            }
+        });
+
+        findViewById(R.id.clear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.clear();
+            }
+        });
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        userAdapter = new UserAdapter();
+
+        RecyclerView userList = (RecyclerView) findViewById(R.id.list);
+        userList.setLayoutManager(layoutManager);
+        userList.setAdapter(userAdapter);
+
+
+        DbHelper dbHelper = new DbHelper(this);
+        UsersModel usersModel = new UsersModel(dbHelper);
+        presenter = new UsersPresenter(usersModel);
+        presenter.attachView(this);
+        presenter.viewIsReady();
+    }
+
+    public UserData getUserData() {
+        UserData userData = new UserData();
+        userData.setName(editTextName.getText().toString());
+        userData.setEmail(editTextEmail.getText().toString());
+        return userData;
+    }
+
+    public void showUsers(List<User> users) {
+        userAdapter.setData(users);
+    }
+
+    public void showToast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showProgress() {
+        progressDialog = ProgressDialog.show(this, "", getString(R.string.please_wait));
+    }
+
+    public void hideProgress() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+}
+================================================================================
+public class UsersModel {
+
+    private final DbHelper dbHelper;
+
+    public UsersModel(DbHelper dbHelper) {
+        this.dbHelper = dbHelper;
+    }
+
+    public void loadUsers(LoadUserCallback callback) {
+        LoadUsersTask loadUsersTask = new LoadUsersTask(callback);
+        loadUsersTask.execute();
+    }
+
+    public void addUser(ContentValues contentValues, CompleteCallback callback) {
+        AddUserTask addUserTask = new AddUserTask(callback);
+        addUserTask.execute(contentValues);
+    }
+
+    public void clearUsers(CompleteCallback completeCallback) {
+        ClearUsersTask clearUsersTask = new ClearUsersTask(completeCallback);
+        clearUsersTask.execute();
+    }
+
+
+    interface LoadUserCallback {
+        void onLoad(List<User> users);
+    }
+
+    interface CompleteCallback {
+        void onComplete();
+    }
+
+    class LoadUsersTask extends AsyncTask<Void, Void, List<User>> {
+
+        private final LoadUserCallback callback;
+
+        LoadUsersTask(LoadUserCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected List<User> doInBackground(Void... params) {
+            List<User> users = new LinkedList<>();
+            Cursor cursor = dbHelper.getReadableDatabase().query(UserTable.TABLE, null, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                User user = new User();
+                user.setId(cursor.getLong(cursor.getColumnIndex(UserTable.COLUMN.ID)));
+                user.setName(cursor.getString(cursor.getColumnIndex(UserTable.COLUMN.NAME)));
+                user.setEmail(cursor.getString(cursor.getColumnIndex(UserTable.COLUMN.EMAIL)));
+                users.add(user);
+            }
+            cursor.close();
+            return users;
+        }
+
+        @Override
+        protected void onPostExecute(List<User> users) {
+            if (callback != null) {
+                callback.onLoad(users);
+            }
+        }
+    }
+
+    class AddUserTask extends AsyncTask<ContentValues, Void, Void> {
+
+        private final CompleteCallback callback;
+
+        AddUserTask(CompleteCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(ContentValues... params) {
+            ContentValues cvUser = params[0];
+            dbHelper.getWritableDatabase().insert(UserTable.TABLE, null, cvUser);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (callback != null) {
+                callback.onComplete();
+            }
+        }
+    }
+
+    class ClearUsersTask extends AsyncTask<Void, Void, Void> {
+
+        private final CompleteCallback callback;
+
+        ClearUsersTask(CompleteCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            dbHelper.getWritableDatabase().delete(UserTable.TABLE, null, null);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (callback != null) {
+                callback.onComplete();
+            }
+        }
+    }
+
+
+}
+=================================================================================
+public class UsersPresenter {
+
+    private UsersActivity view;
+    private final UsersModel model;
+
+    public UsersPresenter(UsersModel model) {
+        this.model = model;
+    }
+
+    public void attachView(UsersActivity usersActivity) {
+        view = usersActivity;
+    }
+
+    public void detachView() {
+        view = null;
+    }
+
+
+    public void viewIsReady() {
+        loadUsers();
+    }
+
+    public void loadUsers() {
+        model.loadUsers(new UsersModel.LoadUserCallback() {
+            @Override
+            public void onLoad(List<User> users) {
+                view.showUsers(users);
+            }
+        });
+    }
+
+    public void add() {
+        UserData userData = view.getUserData();
+        if (TextUtils.isEmpty(userData.getName()) || TextUtils.isEmpty(userData.getEmail())) {
+            view.showToast(R.string.empty_values);
+            return;
+        }
+
+        ContentValues cv = new ContentValues(2);
+        cv.put(UserTable.COLUMN.NAME, userData.getName());
+        cv.put(UserTable.COLUMN.EMAIL, userData.getEmail());
+        view.showProgress();
+        model.addUser(cv, new UsersModel.CompleteCallback() {
+            @Override
+            public void onComplete() {
+                view.hideProgress();
+                loadUsers();
+            }
+        });
+    }
+
+    public void clear() {
+        view.showProgress();
+        model.clearUsers(new UsersModel.CompleteCallback() {
+            @Override
+            public void onComplete() {
+                view.hideProgress();
+                loadUsers();
+            }
+        });
+    }
+
+}

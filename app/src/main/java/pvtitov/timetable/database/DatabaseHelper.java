@@ -18,24 +18,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String COLUMNS_COMMON_PART = new String(
             new StringBuilder().
-                    append(" (").append(Entry._ID).append(" INTEGER PRIMARY KEY,").
-                    append(Entry.COLUMN_CITY_COUNTRY).append(" TEXT").
-                    append(Entry.COLUMN_CITY_DISTRICT).append(" TEXT").
-                    append(Entry.COLUMN_CITY_ID).append(" INTEGER").
-                    append(Entry.COLUMN_CITY_TITLE).append(" TEXT").
-                    append(Entry.COLUMN_CITY_REGION).append(" TEXT").
-                    append(Entry.COLUMN_CITY_LATITUDE).append(" REAL").
-                    append(Entry.COLUMN_CITY_LONGITUDE).append(" REAL").
-                    append(Entry.COLUMN_STATION_COUNTRY).append(" TEXT").
-                    append(Entry.COLUMN_STATION_COUNTRY).append(" TEXT").
-                    append(Entry.COLUMN_STATION_DISTRICT).append(" TEXT").
-                    append(Entry.COLUMN_STATION_CITY_ID).append(" INTEGER").
-                    append(Entry.COLUMN_STATION_CITY_TITLE).append(" TEXT").
-                    append(Entry.COLUMN_STATION_REGION).append(" TEXT").
-                    append(Entry.COLUMN_STATION_LATITUDE).append(" REAL").
-                    append(Entry.COLUMN_STATION_LONGITUDE).append(" REAL").
-                    append(Entry.COLUMN_STATION_ID).append(" INTEGER").
-                    append(Entry.COLUMN_STATION_TITLE).append(" TEXT")
+                    append(" (").append(Entry._ID).append(" INTEGER PRIMARY KEY, ").
+                    append(Entry.COLUMN_CITY_COUNTRY).append(" TEXT, ").
+                    append(Entry.COLUMN_CITY_DISTRICT).append(" TEXT, ").
+                    append(Entry.COLUMN_CITY_ID).append(" INTEGER, ").
+                    append(Entry.COLUMN_CITY_TITLE).append(" TEXT, ").
+                    append(Entry.COLUMN_CITY_REGION).append(" TEXT, ").
+                    append(Entry.COLUMN_CITY_LATITUDE).append(" REAL, ").
+                    append(Entry.COLUMN_CITY_LONGITUDE).append(" REAL, ").
+                    append(Entry.COLUMN_STATION_COUNTRY).append(" TEXT, ").
+                    append(Entry.COLUMN_STATION_DISTRICT).append(" TEXT, ").
+                    append(Entry.COLUMN_STATION_CITY_ID).append(" INTEGER, ").
+                    append(Entry.COLUMN_STATION_CITY_TITLE).append(" TEXT, ").
+                    append(Entry.COLUMN_STATION_REGION).append(" TEXT, ").
+                    append(Entry.COLUMN_STATION_LATITUDE).append(" REAL, ").
+                    append(Entry.COLUMN_STATION_LONGITUDE).append(" REAL, ").
+                    append(Entry.COLUMN_STATION_ID).append(" INTEGER, ").
+                    append(Entry.COLUMN_STATION_TITLE).append(" TEXT)")
     );
 
     private static final String CREATE_TABLE_CITIES_TO = new String(

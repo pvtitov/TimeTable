@@ -2,10 +2,12 @@ package pvtitov.timetable;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +17,7 @@ import pvtitov.timetable.contracts.Station;
 
 public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
     private List<Station> mStations = new ArrayList<>();
-    private OnStationClickListener mListener;
-
-    public interface OnStationClickListener{
-        void onClick(Station station);
-        void onLongClick(Station station);
-    }
+    
 
     public StationsAdapter(){}
 
@@ -38,10 +35,7 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
         }
 
     }
-
-    public void setOnItemClickListener(OnStationClickListener listener){
-        mListener = listener;
-    }
+    
 
     public void updateDataset(List<Station> stations) {
         mStations = stations;
@@ -90,14 +84,12 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
 
 
         holder.mStationTextView.setOnClickListener(view -> {
-            if (mStations != null)
-                mListener.onClick(mStations.get(position));
+            Log.d("debugging", "Выбрать станцию " + position);
         });
 
         holder.mStationTextView.setOnLongClickListener(v -> {
-            if (mStations != null)
-                mListener.onLongClick(mStations.get(position));
-            return false;
+            Log.d("debugging", "Детали о станции " + position);
+            return true;
         });
     }
 
