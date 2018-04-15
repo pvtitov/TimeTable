@@ -38,9 +38,13 @@ public class ParseService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+
+        Log.d("debugging", "service started");
+
         mFileAsString = readFromFile(this, R.raw.all_stations);
 
         if (!hasSameHashCode(mFileAsString)) {
+            Log.d("debugging", "service proceeded parsing");
             dbHelper = new DatabaseHelper(this);
             parseCities(ToOrFrom.TO);
             parseCities(ToOrFrom.FROM);
@@ -50,7 +54,6 @@ public class ParseService extends IntentService {
             broadcast.setAction(ACTION_PARSE_SERVICE);
             broadcast.addCategory(Intent.CATEGORY_DEFAULT);
             sendBroadcast(broadcast);
-            Log.d("debuggable", "broadcast sent");
         }
     }
 

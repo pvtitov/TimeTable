@@ -100,12 +100,15 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == PICK_STATION_CODE) {
             if (resultCode == Activity.RESULT_OK) {
 
-                if (data.getBooleanExtra(FROM, false))
+                if (data.getBooleanExtra(FROM, false)){
+                    mStationFrom = data.getStringExtra(ListActivity.STATION_EXTRA);
                     mButtonFrom.setText(mStationFrom);
+                }
 
-                if (data.getBooleanExtra(TO, false))
+                if (data.getBooleanExtra(TO, false)){
+                    mStationTo = data.getStringExtra(ListActivity.STATION_EXTRA);
                     mButtonTo.setText(mStationTo);
-
+                }
             }
         }
     }

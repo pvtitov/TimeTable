@@ -16,11 +16,12 @@ import pvtitov.timetable.contracts.Station;
 
 
 public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
-    private List<Station> mStations = new ArrayList<>();
-    
 
     public StationsAdapter(){}
 
+
+    private List<Station> mStations = new ArrayList<>();
+    private StationsInteractCallback mCallbackActivity;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mCountryTextView;
@@ -35,7 +36,13 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
         }
 
     }
-    
+
+    public interface StationsInteractCallback{
+        void pickStation(Station s);
+        void showStationDetails(Station s);
+    }
+
+    public void setCallback(StationsInteractCallback callback) {mCallbackActivity = callback;}
 
     public void updateDataset(List<Station> stations) {
         mStations = stations;
@@ -83,12 +90,10 @@ public class StationsAdapter extends Adapter<StationsAdapter.ViewHolder>{
         holder.mCityTextView.setVisibility(cityVisibility);
 
 
-        holder.mStationTextView.setOnClickListener(view -> {
-            Log.d("debugging", "Выбрать станцию " + position);
-        });
+        holder.mStationTextView.setOnClickListener(view -> mCallbackActivity.pickStation(station));
 
         holder.mStationTextView.setOnLongClickListener(v -> {
-            Log.d("debugging", "Детали о станции " + position);
+            mCallbackActivity.showStationDetails(station);
             return true;
         });
     }

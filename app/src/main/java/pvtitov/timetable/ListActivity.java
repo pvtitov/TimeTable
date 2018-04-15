@@ -34,7 +34,7 @@ import pvtitov.timetable.database.StationsContract;
  * Created by Павел on 12.11.2017.
  */
 
-public class ListActivity extends AppCompatActivity{
+public class ListActivity extends AppCompatActivity implements StationsAdapter.StationsInteractCallback {
 
     public static final String STATION_EXTRA = "station";
 
@@ -60,6 +60,7 @@ public class ListActivity extends AppCompatActivity{
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setCallback(this);
         mDatabaseHelper = new DatabaseHelper(this);
 
         Intent intent = getIntent();
@@ -68,13 +69,19 @@ public class ListActivity extends AppCompatActivity{
             mIsTo = intent.getBooleanExtra(MainActivity.TO, false);
         }
 
-        loadStations();
+        loadStations(null, null);
 
         final EditText searchEditText = findViewById(R.id.search_edit_text);
         ImageButton searchButton = findViewById(R.id.search_button);
         searchButton.setOnClickListener(view -> {
-            String query = searchEditText.getText().toString();
-            searchByQuery(mCities, query);
+
+            mAdapter.updateDataset(new ArrayList<>());
+            mAdapter.notifyDataSetChanged();
+
+            String selection = StationsContract.Entry.COLUMN_STATION_TITLE + " LIKE ?";
+            String[] selectionArgs = {"%" + searchEditText.getText().toString() + "%"};
+            loadStations(selection, selectionArgs);
+
         });
 
         mBroadcastReceiver = new ParseBroadcastReceiver();
@@ -83,16 +90,21 @@ public class ListActivity extends AppCompatActivity{
         registerReceiver(mBroadcastReceiver, intentFilter);
     }
 
-    private void loadStations() {
+    private void loadStations(String selection, String[] selectionArgs) {
         SQLiteDatabase database = mDatabaseHelper.getReadableDatabase();
-        String table = mIsFrom? StationsContract.Entry.TABLE_CITIES_FROM:StationsContract.Entry.TABLE_CITIES_TO;
-        try (Cursor cursor = database.query(table, null, null, null, null, null, null)) {
+        String table = mIsFrom ? StationsContract.Entry.TABLE_CITIES_FROM : StationsContract.Entry.TABLE_CITIES_TO;
+        try (Cursor cursor = database.query(table, null, selection, selectionArgs, null, null, null)) {
             while (cursor.moveToNext()) {
                 Station station = new Station();
                 station.setCountry(
                         cursor.getString(
                                 cursor.getColumnIndex(
                                         StationsContract.Entry.COLUMN_STATION_COUNTRY
+                                )));
+                station.setRegion(
+                        cursor.getString(
+                                cursor.getColumnIndex(
+                                        StationsContract.Entry.COLUMN_STATION_REGION
                                 )));
                 station.setCity(
                         cursor.getString(
@@ -111,50 +123,23 @@ public class ListActivity extends AppCompatActivity{
     }
 
 
-    private void searchByQuery(final List<City> cities, final String query) {
-
-        //  Обновляем список
-        mAdapter.updateDataset(new ArrayList<>());
-        mAdapter.notifyDataSetChanged();
-
-        if (cities != null) {
-
-            for (City city: cities) {
-                for (final Station station: city.getStations()) {
-                    // Здесь происходит фильтрация станций по поисковому запросу
-                    if (station.getStation().toLowerCase()
-                            .contains(query.toLowerCase())) {
-
-                        mAdapter.addStation(station);
-                        mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
-                    }
-                }
-            }
-
-            mRecyclerView.scrollToPosition(0);
-        }
-    }
-
-
-    //@Override
-    public void onClick(Station stationItem) {
+    @Override
+    public void pickStation(Station s) {
         Intent intent = new Intent();
-        intent.putExtra(STATION_EXTRA, stationItem.getStation());
+        intent.putExtra(STATION_EXTRA, s.getStation());
         if(mIsFrom) intent.putExtra(MainActivity.FROM, mIsFrom);
         if(mIsTo) intent.putExtra(MainActivity.TO, mIsTo);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
-    //@Override
-    public void onLongClick(Station stationItem) {
-
-        // Формирование строки с детальной информацией о станции
-        String details = stationItem.getStation()+ "\n\n" +
-                stationItem.getCity();
-        if (!stationItem.getRegion().equals(""))
-            details = details + "\n\n" + stationItem.getRegion();
-        details = details + "\n\n" + stationItem.getCountry();
+    @Override
+    public void showStationDetails(Station s) {
+        String details = s.getStation()+ "\n\n" +
+                s.getCity();
+        if (!s.getRegion().equals(""))
+            details = details + "\n\n" + s.getRegion();
+        details = details + "\n\n" + s.getCountry();
 
 
         StationDetailsFragment stationDetailsFragment = new StationDetailsFragment();
@@ -173,7 +158,7 @@ public class ListActivity extends AppCompatActivity{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            loadStations();
+            loadStations(null, null);
         }
     }
 }
